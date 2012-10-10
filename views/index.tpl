@@ -4,6 +4,10 @@
 			<thead>
 				<th>#</th>
 				<th>Titre</th>
+				<th>Date</th>
+				<th>Time</th>
+				<th>Location</th>
+				<th>Description</th>
 				<th>Actions</th>
 			</thead>
 			<tbody>
@@ -11,6 +15,10 @@
 				%for id, user_id, title, date, time, location, description, code_id, lock_id, created, modified in pvs['rows']:
 					<td>{{id}}</td>
 					<td>{{title}}</td>
+					<td>{{date}}</td>
+					<td>{{time}}</td>
+					<td>{{location}}</td>
+					<td>{{description}}</td>
 					<td><a href="/pvs/select/{{id}}">Select</a><br /><a href="/pvs/edit/{{id}}">Edit</a><br /><a href="/pvs/delete/{{id}}">Delete</a></td>
 				%end
 			%else:

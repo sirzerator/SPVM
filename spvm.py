@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from optparse import OptionParser
-import sys
-from bottle import route, run, debug, template, redirect, request, response
+import sys, os
+from bottle import route, run, debug, template, redirect, request, response, static_file
 from application.pv import PV
 
 
@@ -33,6 +33,20 @@ except ImportError:
 # Connecting to database
 db_hook = db_module.DBModule(options.database, options.username, options.password)
 
+@route('/js/<filepath:path>')
+def server_static_js(filepath):
+	pathname = os.path.dirname(sys.argv[0])        
+	realpath = os.path.abspath(pathname)
+	print(realpath+'/js/'+filepath)
+	return static_file(filepath, root=realpath + '/js/')
+	
+@route('/css/<filepath:path>')
+def server_static_css(filepath):
+	pathname = os.path.dirname(sys.argv[0])        
+	realpath = os.path.abspath(pathname)
+	print(realpath+'/js/'+filepath)
+	return static_file(filepath, root=realpath + '/css/')
+
 @route('/')
 def index():
 	pv = PV(db_hook)
@@ -46,7 +60,7 @@ def counter():
 	response.set_cookie('counter', str(count))
 	return 'You visited this page %d times' % count
 
-@route('/pvs/new')
+@route('/pvs/new', method='GET')
 def form_new():
 	return template('pv/new', errors=dict())
 
@@ -62,6 +76,7 @@ def post_new():
 		redirect('/')
 
 @route('/pvs/delete/<id>')
+@route('/pvs/delete', method='POST')
 def post_delete(id=None):
 	if id is None:
 		redirect('/')
