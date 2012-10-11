@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import sqlite3
-from datetime import datetime
 
 
 class DBModule:
@@ -41,9 +40,6 @@ class DBModule:
 		if table is None or fields is None:
 			return False
 		else:
-			if 'created' not in fields.keys():
-				fields['created'] = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-
 			values = list()
 			for value in fields.values():
 				try:

@@ -22,7 +22,7 @@
 					<td><a href="/pvs/select/{{id}}">Select</a><br /><a href="/pvs/edit/{{id}}">Edit</a><br /><a href="/pvs/delete/{{id}}">Delete</a></td>
 				%end
 			%else:
-				<td colspan="3">No PVs to display</td>
+				<td colspan="7">Nothing to display.</td>
 			%end
 			</tbody>
 		</table>

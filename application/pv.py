@@ -1,21 +1,48 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from application.model import Model
+from datetime import datetime
 
 
 class PV(Model):
 	def __init__(self, db):
 		self.table = 'pv'
 		self.rows = [
+			'id',
+			'user_id',
 			'title'
+			'date',
+			'time',
+			'location',
+			'description',
+			'code_id',
+			'lock_id',
+			'created',
+			'modified'
 		]
-		self.validate = {
+		self.validation = {
 				'title': {
 					'type': str,
-					'length': None
+					'maxLength': 100,
+					'required': True
+				},
+				'date': {
+					'type': str,
+					'dateFormat': 'YYYY-mm-dd',
+					'required': True
+				},
+				'time': {
+					'type': 'time',
+					'dateFormat': 'HH:mm:ss',
+					'required': True
+				},
+				'location': {
+					'type': str
+				},
+				'description': {
+					'type': str
 				}
 		}
-
 		self.description = '''
 			CREATE TABLE IF NOT EXISTS "pv" (
 				"id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -35,7 +62,13 @@ class PV(Model):
 		super(PV, self).__init__(db)
 
 	def create(self, fields):
-		return self.db.create(self.table, fields)
+		validation_errors = validate(fields)
+		if validation_errors is None:
+			if 'created' not in fields.keys():
+				fields['created'] = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+			return self.db.create(self.table, fields)
+		else:
+			return validation_errors
 
 	def retrieve(self, fields=None, where='1=1', join=None):
 		return self.db.retrieve(self.table, fields, where, join)

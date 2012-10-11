@@ -33,20 +33,22 @@ except ImportError:
 # Connecting to database
 db_hook = db_module.DBModule(options.database, options.username, options.password)
 
+# Static files
 @route('/js/<filepath:path>')
 def server_static_js(filepath):
-	pathname = os.path.dirname(sys.argv[0])        
+	pathname = os.path.dirname(sys.argv[0])
 	realpath = os.path.abspath(pathname)
 	print(realpath+'/js/'+filepath)
 	return static_file(filepath, root=realpath + '/js/')
-	
+
 @route('/css/<filepath:path>')
 def server_static_css(filepath):
-	pathname = os.path.dirname(sys.argv[0])        
+	pathname = os.path.dirname(sys.argv[0])
 	realpath = os.path.abspath(pathname)
 	print(realpath+'/js/'+filepath)
 	return static_file(filepath, root=realpath + '/css/')
 
+# Index
 @route('/')
 def index():
 	pv = PV(db_hook)
@@ -60,6 +62,7 @@ def counter():
 	response.set_cookie('counter', str(count))
 	return 'You visited this page %d times' % count
 
+# PV
 @route('/pvs/new', method='GET')
 def form_new():
 	return template('pv/new', errors=dict())

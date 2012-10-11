@@ -23,3 +23,7 @@ class Model:
 	def delete(self, where=None):
 		print('Not implemented.')
 		raise NotImplementedError
+
+	def validate(self, fields=None):
+		print('Not implemented.')
+		raise NotImplementedError
