@@ -69,14 +69,20 @@ def form_new():
 
 @route('/pvs/new', method='POST')
 def post_new():
-	title = request.forms.title
+	fields = dict()
+	fields['title'] = request.forms.title
+	fields['date'] = request.forms.date
+	fields['time'] = request.forms.time
+	fields['location'] = request.forms.location
+	fields['description'] = request.forms.description
 
-	if title == '':
-		return "You missed a field."
 
 	pv = PV(db_hook)
-	if pv.create({'title':title}):
+	validation_errors = pv.create(fields)
+	if len(validation_errors) == 0:
 		redirect('/')
+	else:
+		return template('pv/new', errors=validation_errors)
 
 @route('/pvs/delete/<id>')
 @route('/pvs/delete', method='POST')

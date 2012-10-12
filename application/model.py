@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from datetime import datetime
 
 
 class Model:
@@ -25,5 +26,20 @@ class Model:
 		raise NotImplementedError
 
 	def validate(self, fields=None):
-		print('Not implemented.')
-		raise NotImplementedError
+		if self.validation is None:
+			return dict()
+		else:
+			validation_errors = dict()
+			for field_name, field_validation in self.validation.items():
+				if field_name in fields:
+					if 'type' in field_validation and not isinstance(fields[field_name], field_validation['type']) :
+						validation_errors[field_name] = 'Field ' + field_name + ' : incorrect type.'
+					if 'dateFormat' in field_validation:
+						try:
+							datetime.strptime(fields[field_name], field_validation['dateFormat'])
+						except ValueError:
+							validation_errors[field_name] = 'Field ' + field_name + ' : incorrect date/time format.'
+				elif 'required' in field_validation and field_validation['required']:
+					validation_errors[field_name] = 'Field ' + field_name + ' : not present.'
+
+		return validation_errors

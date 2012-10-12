@@ -6,35 +6,35 @@
 					<label for="title">Title</label><br />
 					<input type="text" name="title" id="title" />
 					%if 'title' in errors.keys():
-						<br />{{errors['title']}}
+						<br /><span class="error">{{errors['title']}}</span>
 					%end
 				</p>
 				<p>
 					<label for="date">Date</label><br />
 					<input type="text" name="date" id="date" class="date datepicker" />
 					%if 'date' in errors.keys():
-						<br />{{errors['title']}}
+						<br /><span class="error">{{errors['date']}}</span>
 					%end
 				</p>
 				<p>
 					<label for="time">Time</label><br />
 					<input type="text" name="time" id="time" class="time timepicker" />
 					%if 'time' in errors.keys():
-						<br />{{errors['title']}}
+						<br /><span class="error">{{errors['time']}}</span>
 					%end
 				</p>
 				<p>
 					<label for="location">Location</label><br />
 					<input type="text" name="location" id="location" />
 					%if 'location' in errors.keys():
-						<br />{{errors['title']}}
+						<br /><span class="error">{{errors['location']}}</span>
 					%end
 				</p>
 				<p>
 					<label for="description">Description</label><br />
 					<input type="text" name="description" id="description" />
 					%if 'description' in errors.keys():
-						<br />{{errors['title']}}
+						<br /><span class="error">{{errors['description']}}</span>
 					%end
 				</p>
 				<p>

@@ -23,17 +23,19 @@ class PV(Model):
 		self.validation = {
 				'title': {
 					'type': str,
+					'minLength': 1,
 					'maxLength': 100,
+					'empty': False,
 					'required': True
 				},
 				'date': {
 					'type': str,
-					'dateFormat': 'YYYY-mm-dd',
+					'dateFormat': '%Y-%m-%d',
 					'required': True
 				},
 				'time': {
-					'type': 'time',
-					'dateFormat': 'HH:mm:ss',
+					'type': str,
+					'dateFormat': '%H:%M:%S',
 					'required': True
 				},
 				'location': {
@@ -62,8 +64,8 @@ class PV(Model):
 		super(PV, self).__init__(db)
 
 	def create(self, fields):
-		validation_errors = validate(fields)
-		if validation_errors is None:
+		validation_errors = self.validate(fields)
+		if len(validation_errors) == 0:
 			if 'created' not in fields.keys():
 				fields['created'] = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
 			return self.db.create(self.table, fields)
