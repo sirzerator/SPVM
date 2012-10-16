@@ -68,9 +68,10 @@ class PV(Model):
 		if len(validation_errors) == 0:
 			if 'created' not in fields.keys():
 				fields['created'] = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-			return self.db.create(self.table, fields)
-		else:
-			return validation_errors
+			if not self.db.create(self.table, fields):
+				validation_errors['db'] = 'DB error.'
+
+		return validation_errors
 
 	def retrieve(self, fields=None, where='1=1', join=None):
 		return self.db.retrieve(self.table, fields, where, join)

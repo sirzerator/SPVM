@@ -25,6 +25,7 @@ class Model:
 		print('Not implemented.')
 		raise NotImplementedError
 
+	# TODO Define defaults, possible keys/values
 	def validate(self, fields=None):
 		if self.validation is None:
 			return dict()
@@ -32,6 +33,10 @@ class Model:
 			validation_errors = dict()
 			for field_name, field_validation in self.validation.items():
 				if field_name in fields:
+					if 'required' in field_validation and field_validation['required']:
+						if 'empty' in field_validation and not field_validation['empty']:
+							if len(fields[field_name].strip()) == 0:
+								validation_errors[field_name] = 'Field ' + field_name + ' : cannot be empty.'
 					if 'type' in field_validation and not isinstance(fields[field_name], field_validation['type']) :
 						validation_errors[field_name] = 'Field ' + field_name + ' : incorrect type.'
 					if 'dateFormat' in field_validation:

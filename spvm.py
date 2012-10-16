@@ -64,8 +64,12 @@ def counter():
 
 # PV
 @route('/pvs/new', method='GET')
-def form_new():
+def get_new():
 	return template('pv/new', errors=dict())
+
+@route('/pvs/ajax/new', method='GET')
+def ajax_get_new():
+	return template('pv/ajax/new', errors=dict())
 
 @route('/pvs/new', method='POST')
 def post_new():
@@ -76,7 +80,6 @@ def post_new():
 	fields['location'] = request.forms.location
 	fields['description'] = request.forms.description
 
-
 	pv = PV(db_hook)
 	validation_errors = pv.create(fields)
 	if len(validation_errors) == 0:
@@ -84,7 +87,7 @@ def post_new():
 	else:
 		return template('pv/new', errors=validation_errors)
 
-@route('/pvs/delete/<id>')
+@route('/pvs/delete/<id>') # TODO Specific function for this
 @route('/pvs/delete', method='POST')
 def post_delete(id=None):
 	if id is None:

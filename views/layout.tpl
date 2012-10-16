@@ -12,20 +12,27 @@
 			$(function() {
 				$('.datepicker').datepicker(
 					{
-						dateFormat:		"yy-mm-dd",
-						changeMonth:	true,
-						changeYear:		true,
-						showAnim:		"slideDown",
-						defaultDate:	null,
-						showButtonPanel:true
+						dateFormat: "yy-mm-dd",
+						changeMonth: true,
+						changeYear: true,
+						showAnim: "slideDown",
+						defaultDate: new Date(),
+						showButtonPanel: true,
+						showOtherMonths: true,
+						selectOtherMonths: true
 					}
 				);
 				$('.timepicker').timepicker({
 					timeFormat:	'hh:mm:ss',
-					stepHour:	1,
-					stepMinute:	5,
-					showAnim:	"slideDown",
+					stepHour: 1,
+					stepMinute: 5,
+					defaultTime: 0,
+					showAnim: "slideDown",
 				});
+				$('ul.icons li').hover(
+					function() { $(this).addClass('ui-state-hover'); },
+					function() { $(this).removeClass('ui-state-hover'); }
+				);
 			});
 		</script>
 		<title>{{!title}}</title>

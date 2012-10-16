@@ -58,8 +58,16 @@ class DBModule:
 		if table is None:
 			return False
 		else:
-			print('DELETE FROM {0} WHERE {1};'.format(table, ','.join(where)))
-			self.c.execute('DELETE FROM {0} WHERE {1};'.format(table, ','.join(where)))
+			where_fields = list()
+			for field, value in where.items():
+				try:
+					float(value)
+					where_fields.append(field + ' = ' + value)
+				except(ValueError):
+					where_fields.append(field + ' = "' + value + '"')
+
+			print('DELETE FROM {0} WHERE {1};'.format(table, ' AND '.join(where_fields)))
+			self.c.execute('DELETE FROM {0} WHERE {1};'.format(table, ' AND '.join(where_fields)))
 			self.conn.commit()
 
 		return True
