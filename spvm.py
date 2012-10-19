@@ -63,15 +63,15 @@ def counter():
 	return 'You visited this page %d times' % count
 
 # PV
-@route('/pvs/new', method='GET')
+@route('/pv/new', method='GET')
 def get_new():
 	return template('pv/new', errors=dict())
 
-@route('/pvs/ajax/new', method='GET')
+@route('/pv/ajax/new', method='GET')
 def ajax_get_new():
 	return template('pv/ajax/new', errors=dict())
 
-@route('/pvs/new', method='POST')
+@route('/pv/new', method='POST')
 def post_new():
 	fields = dict()
 	fields['title'] = request.forms.title
@@ -81,14 +81,30 @@ def post_new():
 	fields['description'] = request.forms.description
 
 	pv = PV(db_hook)
-	validation_errors = pv.create(fields)
-	if len(validation_errors) == 0:
-		redirect('/')
+	validation_result = pv.create(fields)
+	if isinstance(validation_result, dict):
+		return template('pv/new', errors=validation_result)
 	else:
-		return template('pv/new', errors=validation_errors)
+		redirect('/')
 
-@route('/pvs/delete/<id>') # TODO Specific function for this
-@route('/pvs/delete', method='POST')
+@route('/pv/ajax/new', method='POST')
+def post_new():
+	fields = dict()
+	fields['title'] = request.forms.title
+	fields['date'] = request.forms.date
+	fields['time'] = request.forms.time
+	fields['location'] = request.forms.location
+	fields['description'] = request.forms.description
+
+	pv = PV(db_hook)
+	validation_result = pv.create(fields)
+	if isinstance(validation_result, dict):
+		return validation_result
+	else:
+		return {'id': validation_result}
+
+@route('/pv/delete/<id>') # TODO Specific function for this
+@route('/pv/delete', method='POST')
 def post_delete(id=None):
 	if id is None:
 		redirect('/')

@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="/css/reset.css" />
 		<link rel="stylesheet" href="/css/smoothness/jquery-ui-1.9.0.css" />
 		<link rel="stylesheet" href="/css/style.css" />
+		<link rel="stylesheet" href="/css/forms.css" />
 		<link rel="stylesheet" href="/css/clearfix.css" />
 		<script>
 			$(function() {

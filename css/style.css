@@ -2,6 +2,10 @@ body {
 	font-size:12px;
 }
 
+table tr.overflow {
+	display:none;
+}
+
 ul.icons {
 	list-style-type:none;
 	margin:0;

@@ -1,7 +1,7 @@
 		<h1>SPVM</h1>
 		<h2>New PV</h2>
 		<div class="form clearfix">
-			<form action="/pvs/new" method="post">
+			<form id="new_pv" action="/pv/new" method="post">
 				<p class="field title">
 					<label for="title">Title</label><br />
 					<input type="text" name="title" id="title" />

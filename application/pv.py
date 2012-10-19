@@ -68,8 +68,13 @@ class PV(Model):
 		if len(validation_errors) == 0:
 			if 'created' not in fields.keys():
 				fields['created'] = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-			if not self.db.create(self.table, fields):
-				validation_errors['db'] = 'DB error.'
+
+			insert_id = self.db.create(self.table, fields)
+
+			if not insert_id:
+				return 'DB error.'
+			else:
+				return insert_id
 
 		return validation_errors
 

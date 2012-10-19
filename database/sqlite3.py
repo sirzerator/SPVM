@@ -52,7 +52,14 @@ class DBModule:
 			self.c.execute('INSERT INTO {0} ({1}) VALUES ({2});'.format(table, ','.join(fields.keys()), ','.join(values)))
 			self.conn.commit()
 
-		return True
+			self.c.execute("SELECT last_insert_rowid()")
+			for row in self.c:
+				insert_id = row[0]
+
+			if insert_id:
+				return insert_id
+			else:
+				return 'DB Error.'
 
 	def delete(self, table=None, where='1=0'):
 		if table is None:
