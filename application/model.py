@@ -18,10 +18,10 @@ class Model:
 			if 'created' not in fields.keys():
 				fields['created'] = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
 
-				if self.db.create(self.table, fields):
-					return self.db.last_insert_rowid()
-				else:
-					return {'database':'DB Error.'}
+			if self.db.create(self.table, fields):
+				return self.db.last_insert_rowid()
+			else:
+				return {'database':'DB Error.'}
 
 		return validation_errors
 
@@ -42,8 +42,7 @@ class Model:
 		return validation_errors
 
 	def delete(self, where=None):
-		print('Not implemented.')
-		raise NotImplementedError
+		return self.db.delete(self.table, where)
 
 	# TODO Define defaults, possible keys/values
 	def validate(self, fields=None):

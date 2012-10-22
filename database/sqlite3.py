@@ -37,15 +37,15 @@ class DBModule:
 				except(ValueError):
 					values.append('"' + value + '"')
 
-				print('INSERT INTO {0} ({1}) VALUES ({2});'.format(table, ','.join(fields.keys()), ','.join(values)))
-				try:
-					self.c.execute('INSERT INTO {0} ({1}) VALUES ({2});'.format(table, ','.join(fields.keys()), ','.join(values)))
-					self.conn.commit()
-				except:
-					print('DB Error.')
-					return False
+			print('INSERT INTO {0} ({1}) VALUES ({2});'.format(table, ','.join(fields.keys()), ','.join(values)))
+			try:
+				self.c.execute('INSERT INTO {0} ({1}) VALUES ({2});'.format(table, ','.join(fields.keys()), ','.join(values)))
+				self.conn.commit()
+			except:
+				print('DB Error.')
+				return False
 
-				return True
+			return True
 
 	def retrieve(self, table=None, fields=None, where=None, join=None):
 		if table is None or fields is None:
