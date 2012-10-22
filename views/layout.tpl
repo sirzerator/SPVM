@@ -4,6 +4,7 @@
 		<script type="text/javascript" src="/js/jquery-1.8.2.js"></script>
 		<script type="text/javascript" src="/js/jquery-ui-1.9.0.js"></script>
 		<script type="text/javascript" src="/js/jquery-ui-timepicker-addon.js"></script>
+		<script type="text/javascript" src="/js/spvm-ui.js"></script>
 		<link rel="stylesheet" href="/css/reset.css" />
 		<link rel="stylesheet" href="/css/smoothness/jquery-ui-1.9.0.css" />
 		<link rel="stylesheet" href="/css/style.css" />
@@ -11,29 +12,6 @@
 		<link rel="stylesheet" href="/css/clearfix.css" />
 		<script>
 			$(function() {
-				$('.datepicker').datepicker(
-					{
-						dateFormat: "yy-mm-dd",
-						changeMonth: true,
-						changeYear: true,
-						showAnim: "slideDown",
-						defaultDate: new Date(),
-						showButtonPanel: true,
-						showOtherMonths: true,
-						selectOtherMonths: true
-					}
-				);
-				$('.timepicker').timepicker({
-					timeFormat:	'hh:mm:ss',
-					stepHour: 1,
-					stepMinute: 5,
-					defaultTime: 0,
-					showAnim: "slideDown",
-				});
-				$('ul.icons li').hover(
-					function() { $(this).addClass('ui-state-hover'); },
-					function() { $(this).removeClass('ui-state-hover'); }
-				);
 			});
 		</script>
 		<title>{{!title}}</title>

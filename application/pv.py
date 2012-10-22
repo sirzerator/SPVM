@@ -21,6 +21,9 @@ class PV(Model):
 			'modified'
 		]
 		self.validation = {
+				'user_id': {
+					'type': int
+				},
 				'title': {
 					'type': str,
 					'minLength': 1,
@@ -43,6 +46,12 @@ class PV(Model):
 				},
 				'description': {
 					'type': str
+				},
+				'code_id': {
+					'type': int
+				},
+				'lock_id': {
+					'type': int
 				}
 		}
 		self.description = '''
@@ -63,26 +72,14 @@ class PV(Model):
 
 		super(PV, self).__init__(db)
 
-	def create(self, fields):
-		validation_errors = self.validate(fields)
-		if len(validation_errors) == 0:
-			if 'created' not in fields.keys():
-				fields['created'] = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+	#def create(self, fields):
+		#return super(PV, self).create(fields)
 
-			insert_id = self.db.create(self.table, fields)
-
-			if not insert_id:
-				return 'DB error.'
-			else:
-				return insert_id
-
-		return validation_errors
-
-	def retrieve(self, fields=None, where='1=1', join=None):
-		return self.db.retrieve(self.table, fields, where, join)
+	#def retrieve(self, fields='*', where=None, join=None):
+		#return self.db.retrieve(self.table, fields, where, join)
 
 	#def update(self, fields=None, where='1=1'):
 		#pass
 
-	def delete(self, where='1=0'):
-		return self.db.delete(self.table, where)
+	#def delete(self, where='1=0'):
+		#return self.db.delete(self.table, where)

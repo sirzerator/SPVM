@@ -10,16 +10,36 @@ class Model:
 		self.db.create_table(self.description)
 
 	def create(self, fields):
-		print('Not implemented.')
-		raise NotImplementedError
+		if self.table is None:
+			return False
 
-	def retrieve(self, fields=None, where=None, join=None):
-		print('Not implemented.')
-		raise NotImplementedError
+		validation_errors = self.validate(fields)
+		if len(validation_errors) == 0:
+			if 'created' not in fields.keys():
+				fields['created'] = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+
+				if self.db.create(self.table, fields):
+					return self.db.last_insert_rowid()
+				else:
+					return {'database':'DB Error.'}
+
+		return validation_errors
+
+	def retrieve(self, fields=list('*'), where=None, join=None):
+		return self.db.retrieve(self.table, fields, where, join);
 
 	def update(self, fields=None, where=None):
-		print('Not implemented.')
-		raise NotImplementedError
+		if self.table is None:
+			return False
+
+		validation_errors = self.validate(fields)
+		if len(validation_errors) == 0:
+			if self.db.update(self.table, fields, where):
+				return fields['id']
+			else:
+				return {'database':'DB Error.'}
+
+		return validation_errors
 
 	def delete(self, where=None):
 		print('Not implemented.')

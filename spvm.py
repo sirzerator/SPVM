@@ -38,21 +38,19 @@ db_hook = db_module.DBModule(options.database, options.username, options.passwor
 def server_static_js(filepath):
 	pathname = os.path.dirname(sys.argv[0])
 	realpath = os.path.abspath(pathname)
-	print(realpath+'/js/'+filepath)
 	return static_file(filepath, root=realpath + '/js/')
 
 @route('/css/<filepath:path>')
 def server_static_css(filepath):
 	pathname = os.path.dirname(sys.argv[0])
 	realpath = os.path.abspath(pathname)
-	print(realpath+'/js/'+filepath)
 	return static_file(filepath, root=realpath + '/css/')
 
 # Index
 @route('/')
 def index():
 	pv = PV(db_hook)
-	pvs = pv.retrieve('*')
+	pvs = pv.retrieve()
 	return template('index', pvs=pvs)
 
 @route('/counter')
@@ -62,7 +60,11 @@ def counter():
 	response.set_cookie('counter', str(count))
 	return 'You visited this page %d times' % count
 
-# PV
+###
+### PV
+###
+
+### New
 @route('/pv/new', method='GET')
 def get_new():
 	return template('pv/new', errors=dict())
@@ -88,7 +90,7 @@ def post_new():
 		redirect('/')
 
 @route('/pv/ajax/new', method='POST')
-def post_new():
+def ajax_post_new():
 	fields = dict()
 	fields['title'] = request.forms.title
 	fields['date'] = request.forms.date
@@ -103,15 +105,92 @@ def post_new():
 	else:
 		return {'id': validation_result}
 
-@route('/pv/delete/<id>') # TODO Specific function for this
+### Edit
+@route('/pv/edit/<pv_id>', method='GET')
+def get_edit(pv_id=None):
+	pv = PV(db_hook)
+	data = pv.retrieve(where={'id':pv_id})
+	return template('pv/edit', data=data['rows'][0], errors=dict())
+
+@route('/pv/ajax/edit', method='GET')
+def ajax_get_edit():
+	pv = PV(db_hook)
+	data = pv.retrieve(where={'id':request.query.pv_id})
+	return template('pv/ajax/edit', data=data['rows'][0], errors=dict())
+
+@route('/pv/edit', method='POST')
+def post_edit():
+	fields = dict()
+	fields['id'] = request.forms.pv_id
+	fields['title'] = request.forms.title
+	fields['date'] = request.forms.date
+	fields['time'] = request.forms.time
+	fields['location'] = request.forms.location
+	fields['description'] = request.forms.description
+
+	pv = PV(db_hook)
+	validation_result = pv.update(fields, {'id': fields['id']})
+	print(validation_result)
+	if isinstance(validation_result, dict):
+
+		return template('pv/edit', data=fields, errors=validation_result)
+	else:
+		redirect('/')
+
+@route('/pv/ajax/edit', method='POST')
+def ajax_post_edit():
+	fields = dict()
+	fields['id'] = request.forms.pv_id
+	fields['title'] = request.forms.title
+	fields['date'] = request.forms.date
+	fields['time'] = request.forms.time
+	fields['location'] = request.forms.location
+	fields['description'] = request.forms.description
+
+	pv = PV(db_hook)
+	validation_result = pv.update(fields, {'id': fields['id']})
+	if isinstance(validation_result, dict):
+		return validation_result
+	else:
+		return {'id': validation_result}
+
+### Delete
+@route('/pv/delete/<pv_id>')
+def get_delete(pv_id=None):
+	if pv_id is None:
+		redirect('/')
+	else:
+		return template('pv/delete', pv_id=pv_id)
+
+@route('/pv/ajax/delete', method='GET')
+def ajax_get_delete():
+	pv_id = request.query.pv_id
+	return template('pv/ajax/delete', pv_id=pv_id)
+
 @route('/pv/delete', method='POST')
-def post_delete(id=None):
-	if id is None:
+def post_delete():
+	pv_id = request.forms.pv_id
+	if pv_id is None:
 		redirect('/')
 	else:
 		pv = PV(db_hook)
-		if pv.delete({'id':id}):
+		if pv.delete({'id':pv_id}):
 			redirect('/')
+		else:
+			print('Error. Do something.') # TODO
+
+@route('/pv/ajax/delete', method='POST')
+def ajax_post_delete():
+	pv_id = request.forms.pv_id
+	if pv_id is None:
+		redirect('/')
+	else:
+		pv = PV(db_hook)
+		if pv.delete({'id':pv_id}):
+			redirect('/')
+		else:
+			print('Error. Do something.') # TODO
+
 
 # Loading interface (controller/view)
 debug(True)
