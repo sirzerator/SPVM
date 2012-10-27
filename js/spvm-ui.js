@@ -64,7 +64,7 @@ function castDialog(model, action, properties, arguments) {
 						newRow = $("table." + model + " tbody .overflow").clone();
 					}
 
-					var placeholdersRegExp=/\*\|(.+)\|\*/g;
+					var placeholdersRegExp=/\*\|(.+?)\|\*/g;
 					results = newRow.html().match(placeholdersRegExp);
 
 					for (i = 0; i < results.length; i++) {
@@ -74,7 +74,7 @@ function castDialog(model, action, properties, arguments) {
 							newRow.html(newRow.html().replace(/\*%7Cid%7C\*/g, ""+response['id']));
 						} else {
 							variableName = results[i].substr(2, results[i].length-4);
-							var currentPlaceholderRegex = new RegExp("\\*\\|" + results[i].substr(2, results[i].length-4) + "\\|\\*", "g");
+							var currentPlaceholderRegex = new RegExp("\\*\\|" + variableName + "\\|\\*", "g");
 							newRow.html(newRow.html().replace(currentPlaceholderRegex, $('#' + variableName).val()));
 						}
 					}

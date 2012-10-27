@@ -66,7 +66,7 @@
 					e.preventDefault();
 					castDialog('pv', 'delete', {title:"Are you sure you want to delete this PV ?", OK:"Yes", Cancel:"No", width:300, height:125, modal:true, resizable:false}, "pv_id=" + $(this).attr('rel'));
 				});
-				$(".pv.edit").click(function(e) {
+				$("table.pv").delegate(".pv.edit", "click", function(e) {
 					e.preventDefault();
 					properties = {
 						title:"Edit PV",
