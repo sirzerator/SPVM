@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 from optparse import OptionParser
 import sys, os
-from bottle import route, run, debug, template, redirect, request, response, static_file
+from bottle import *
 from application.pv import PV
+from application.point import Point
 
 
 # Parsing command line arguments
@@ -66,15 +67,15 @@ def counter():
 
 ### New
 @route('/pv/new', method='GET')
-def get_new():
+def get_new_pv():
 	return template('pv/new', errors=dict())
 
 @route('/pv/ajax/new', method='GET')
-def ajax_get_new():
+def ajax_get_new_pv():
 	return template('pv/ajax/new', errors=dict())
 
 @route('/pv/new', method='POST')
-def post_new():
+def post_new_pv():
 	fields = dict()
 	fields['title'] = request.forms.title
 	fields['date'] = request.forms.date
@@ -90,7 +91,7 @@ def post_new():
 		redirect('/')
 
 @route('/pv/ajax/new', method='POST')
-def ajax_post_new():
+def ajax_post_new_pv():
 	fields = dict()
 	fields['title'] = request.forms.title
 	fields['date'] = request.forms.date
@@ -107,19 +108,21 @@ def ajax_post_new():
 
 ### Edit
 @route('/pv/edit/<pv_id>', method='GET')
-def get_edit(pv_id=None):
+def get_edit_pv(pv_id=None):
 	pv = PV(db_hook)
-	data = pv.retrieve(where={'id':pv_id})
-	return template('pv/edit', data=data['rows'][0], errors=dict())
+	data = pv.retrieve_one(where={'id':pv_id})
+
+	return template('pv/edit', data=data, errors=dict())
 
 @route('/pv/ajax/edit', method='GET')
-def ajax_get_edit():
+def ajax_get_edit_pv():
 	pv = PV(db_hook)
-	data = pv.retrieve(where={'id':request.query.pv_id})
-	return template('pv/ajax/edit', data=data['rows'][0], errors=dict())
+	data = pv.retrieve_one(where={'id':request.query.pv_id})
+
+	return template('pv/ajax/edit', data=data, errors=dict())
 
 @route('/pv/edit', method='POST')
-def post_edit():
+def post_edit_pv():
 	fields = dict()
 	fields['id'] = request.forms.pv_id
 	fields['title'] = request.forms.title
@@ -130,15 +133,14 @@ def post_edit():
 
 	pv = PV(db_hook)
 	validation_result = pv.update(fields, {'id': fields['id']})
-	print(validation_result)
-	if isinstance(validation_result, dict):
 
+	if isinstance(validation_result, dict):
 		return template('pv/edit', data=fields, errors=validation_result)
 	else:
 		redirect('/')
 
 @route('/pv/ajax/edit', method='POST')
-def ajax_post_edit():
+def ajax_post_edit_pv():
 	fields = dict()
 	fields['id'] = request.forms.pv_id
 	fields['title'] = request.forms.title
@@ -156,19 +158,19 @@ def ajax_post_edit():
 
 ### Delete
 @route('/pv/delete/<pv_id>')
-def get_delete(pv_id=None):
+def get_delete_pv(pv_id=None):
 	if pv_id is None:
 		redirect('/')
 	else:
 		return template('pv/delete', pv_id=pv_id)
 
 @route('/pv/ajax/delete', method='GET')
-def ajax_get_delete():
+def ajax_get_delete_pv():
 	pv_id = request.query.pv_id
 	return template('pv/ajax/delete', pv_id=pv_id)
 
 @route('/pv/delete', method='POST')
-def post_delete():
+def post_delete_pv():
 	pv_id = request.forms.pv_id
 	if pv_id is None:
 		redirect('/')
@@ -180,7 +182,7 @@ def post_delete():
 			print('Error. Do something.') # TODO
 
 @route('/pv/ajax/delete', method='POST')
-def ajax_post_delete():
+def ajax_post_delete_pv():
 	pv_id = request.forms.pv_id
 	if pv_id is None:
 		redirect('/')
@@ -191,6 +193,84 @@ def ajax_post_delete():
 		else:
 			print('Error. Do something.') # TODO
 
+### Select
+@route('/pv/<pv_id>', method='GET')
+def get_pv(pv_id=None):
+	if pv_id is None:
+		redirect('/')
+	else:
+		cookie_data = request.get_cookie('spvm', dict(), secret='secret')
+
+		if not isinstance(cookie_data, dict) and cookie_is_encoded(cookie_data):
+			cookie_data = cookie_decode(cookie_data, 'key')
+
+		cookie_data['pv_id'] = pv_id
+
+		response.set_cookie('spvm', cookie_encode(cookie_data, 'key'), secret='secret', path='/')
+
+		pv = PV(db_hook)
+		pv_data = pv.retrieve_one(where={'id':pv_id})
+
+		point = Point(db_hook)
+		points = point.retrieve(where={'pv_id':pv_id, 'parent_id':''})
+
+		return template('main', pv_data=pv_data, points=points)
+
+### Unselect
+@route('/pv/close', method='GET')
+def close_pv():
+	cookie_data = request.get_cookie('spvm', dict(), secret='secret')
+
+	if not isinstance(cookie_data, dict) and cookie_is_encoded(cookie_data):
+		cookie_data = cookie_decode(cookie_data, 'key')
+
+	cookie_data['pv_id'] = 0
+
+	response.set_cookie('spvm', cookie_encode(cookie_data, 'key'), secret='secret', path='/')
+
+	redirect('/')
+
+###
+### Point
+###
+
+### New
+@route('/point/new', method='GET')
+def get_new_point():
+	cookie_data = request.get_cookie('spvm', dict(), secret='secret')
+
+	if not isinstance(cookie_data, dict) and cookie_is_encoded(cookie_data):
+		cookie_data = cookie_decode(cookie_data, 'key')
+
+	if 'pv_id' not in cookie_data or cookie_data['pv_id'] is None:
+		redirect('/')
+
+	point = Point(db_hook)
+	points = point.retrieve(where={'pv_id':cookie_data['pv_id']})
+
+	return template('point/new', pv_id=cookie_data['pv_id'], points=points, errors=dict())
+
+@route('/point/new', method='POST')
+def post_new_point():
+	fields = dict()
+	fields['pv_id'] = request.forms.pv_id
+	fields['title'] = request.forms.title
+	fields['description'] = request.forms.description
+	fields['rank'] = request.forms.rank
+	fields['parent_id'] = request.forms.parent_id
+
+	point = Point(db_hook)
+	validation_result = point.create(fields)
+	print(validation_result)
+	if isinstance(validation_result, dict):
+		point = Point(db_hook)
+		points = point.retrieve(where={'pv_id':fields['pv_id']})
+
+		print(validation_result)
+
+		return template('point/new', pv_id=fields['pv_id'], points=points, errors=validation_result)
+	else:
+		redirect('/pv/'+fields['pv_id'])
 
 # Loading interface (controller/view)
 debug(True)

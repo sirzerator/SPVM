@@ -14,3 +14,4 @@
 		reassignUiElements();
 		assignButtonElements($('.form.clearfix'));
 	</script>
+	%rebase layout title='SPVM'

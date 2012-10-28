@@ -15,7 +15,7 @@ class Model:
 
 		validation_errors = self.validate(fields)
 		if len(validation_errors) == 0:
-			if 'created' not in fields.keys():
+			if 'created' in self.rows and 'created' not in fields.keys():
 				fields['created'] = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
 
 			if self.db.create(self.table, fields):
@@ -25,8 +25,26 @@ class Model:
 
 		return validation_errors
 
-	def retrieve(self, fields=list('*'), where=None, join=None):
-		return self.db.retrieve(self.table, fields, where, join);
+	def retrieve(self, fields=list('*'), where=None, order=None):
+		base = self.db.retrieve(self.table, fields, where, order);
+
+		for row in base['rows']:
+			if isinstance(self.has_many, dict):
+				for relation_name, relation_attributes in self.has_many.items():
+					row_where = {relation_attributes['key']:row['id']}
+
+					if 'belongs_to' in relation_attributes:
+						row_where[self.belongs_to[relation_attributes['belongs_to']]['key']] = ''
+
+					row[relation_name] = self.db.retrieve(relation_attributes['table'], '*', row_where)
+
+		return base
+
+	def retrieve_one(self, fields=list('*'), where=None, order=None):
+		return self.db.retrieve(self.table, fields, where, order)['rows'][0];
+
+	def retrieve_list(self, fields=list('*'), where=None, order=None):
+		return self.db.retrieve(self.table, fields, where, order)['rows'];
 
 	def update(self, fields=None, where=None):
 		if self.table is None:
@@ -56,8 +74,15 @@ class Model:
 						if 'empty' in field_validation and not field_validation['empty']:
 							if len(fields[field_name].strip()) == 0:
 								validation_errors[field_name] = 'Field ' + field_name + ' : cannot be empty.'
-					if 'type' in field_validation and not isinstance(fields[field_name], field_validation['type']) :
-						validation_errors[field_name] = 'Field ' + field_name + ' : incorrect type.'
+					if 'type' in field_validation:
+						if field_validation['type'] == int:
+							try:
+								int(fields[field_name])
+							except(ValueError):
+								if fields[field_name].strip() != "":
+									validation_errors[field_name] = 'Field ' + field_name + ' : integer type expected.'
+						elif not isinstance(fields[field_name], field_validation['type']):
+							validation_errors[field_name] = 'Field ' + field_name + ' : incorrect type.'
 					if 'dateFormat' in field_validation:
 						try:
 							datetime.strptime(fields[field_name], field_validation['dateFormat'])

@@ -9,14 +9,14 @@ class PV(Model):
 		self.table = 'pv'
 		self.rows = [
 			'id',
-			'user_id',
+			'user_id', # TODO
 			'title'
 			'date',
 			'time',
 			'location',
 			'description',
-			'code_id',
-			'lock_id',
+			'code_id', # TODO
+			'lock_id', # TODO
 			'created',
 			'modified'
 		]
@@ -54,6 +54,12 @@ class PV(Model):
 					'type': int
 				}
 		}
+		self.has_many = {
+			'points': {
+				'table':'point',
+				'key':'pv_id'
+			}
+		}
 		self.description = '''
 			CREATE TABLE IF NOT EXISTS "pv" (
 				"id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -71,15 +77,3 @@ class PV(Model):
 		'''
 
 		super(PV, self).__init__(db)
-
-	#def create(self, fields):
-		#return super(PV, self).create(fields)
-
-	#def retrieve(self, fields='*', where=None, join=None):
-		#return self.db.retrieve(self.table, fields, where, join)
-
-	#def update(self, fields=None, where='1=1'):
-		#pass
-
-	#def delete(self, where='1=0'):
-		#return self.db.delete(self.table, where)

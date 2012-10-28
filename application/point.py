@@ -37,6 +37,22 @@ class Point(Model):
 					'type': int
 				}
 		}
+		self.belongs_to = {
+			'pv': {
+				'table':'pv',
+				'key':'pv_id'
+			},
+			'parent': {
+				'table':'point',
+				'key':'parent_id'
+			}
+		}
+		self.has_many = {
+			'children': {
+				'table':'point',
+				'key':'parent_id'
+			}
+		}
 		self.description = '''
 			CREATE  TABLE  IF NOT EXISTS "point" (
 				"id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -48,16 +64,4 @@ class Point(Model):
 			)
 		'''
 
-		super(PV, self).__init__(db)
-
-	#def create(self, fields):
-		#return super(PV, self).create(fields)
-
-	def retrieve(self, fields=None, where='1=1', join=None):
-		return self.db.retrieve(self.table, fields, where, join)
-
-	#def update(self, fields=None, where='1=1'):
-		#pass
-
-	def delete(self, where=None):
-		return self.db.delete(self.table, where)
+		super(Point, self).__init__(db)

@@ -32,14 +32,14 @@ class DBModule:
 			values = list()
 			for value in fields.values():
 				try:
-					float(value)
+					int(value)
 					values.append(value)
 				except(ValueError):
 					values.append('"' + value + '"')
 
-			print('INSERT INTO {0} ({1}) VALUES ({2});'.format(table, ','.join(fields.keys()), ','.join(values)))
+			print('INSERT INTO {0} ({1}) VALUES ({2});'.format(table, ', '.join(fields.keys()), ', '.join(values)))
 			try:
-				self.c.execute('INSERT INTO {0} ({1}) VALUES ({2});'.format(table, ','.join(fields.keys()), ','.join(values)))
+				self.c.execute('INSERT INTO {0} ({1}) VALUES ({2});'.format(table, ', '.join(fields.keys()), ', '.join(values)))
 				self.conn.commit()
 			except:
 				print('DB Error.')
@@ -47,7 +47,7 @@ class DBModule:
 
 			return True
 
-	def retrieve(self, table=None, fields=None, where=None, join=None):
+	def retrieve(self, table=None, fields=None, where=None, order=None):
 		if table is None or fields is None:
 			return False
 		else:
@@ -55,12 +55,16 @@ class DBModule:
 
 			if where is not None:
 				where_fields = list()
-				for field, value in where.items():
-					try:
-						float(value)
-						where_fields.append(field + ' = ' + value)
-					except(ValueError):
-						where_fields.append(field + ' = "' + value + '"')
+				if isinstance(where, dict):
+					for field, value in where.items():
+						try:
+							int(value)
+							where_fields.append(field + ' = ' + str(value))
+						except(ValueError):
+							where_fields.append(field + ' = "' + str(value) + '"')
+				else:
+					where_fields.append(where)
+
 				query +=  ' WHERE {0}'.format(' AND '.join(where_fields));
 
 			query += ';'
@@ -95,12 +99,15 @@ class DBModule:
 			return False
 		else:
 			fields_query = list()
-			for field, value in fields.items():
-				try:
-					float(value)
-					fields_query.append(field + ' = ' + value)
-				except(ValueError):
-					fields_query.append(field + ' = "' + value + '"')
+			if isinstance(fields, dict):
+				for field, value in fields.items():
+					try:
+						int(value)
+						fields_query.append(field + ' = ' + value)
+					except(ValueError):
+						fields_query.append(field + ' = "' + value + '"')
+			else:
+				fields_query.append(fields)
 
 			query = 'UPDATE {0} SET {1}'.format(table, ', '.join(fields_query))
 
@@ -108,7 +115,7 @@ class DBModule:
 				where_fields = list()
 				for field, value in where.items():
 					try:
-						float(value)
+						int(value)
 						where_fields.append(field + ' = ' + value)
 					except(ValueError):
 						where_fields.append(field + ' = "' + value + '"')
@@ -132,7 +139,7 @@ class DBModule:
 			where_fields = list()
 			for field, value in where.items():
 				try:
-					float(value)
+					int(value)
 					where_fields.append(field + ' = ' + value)
 				except(ValueError):
 					where_fields.append(field + ' = "' + value + '"')

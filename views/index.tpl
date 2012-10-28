@@ -15,7 +15,7 @@
 				%for row in pvs['rows']:
 				<tr id="pv_{{row['id']}}">
 					<td>{{row['id']}}</td>
-					<td><a href="/pv/select/{{row['id']}}">{{row['title']}}</a></td>
+					<td><a href="/pv/{{row['id']}}">{{row['title']}}</a></td>
 					<td>{{row['date']}}</td>
 					<td>{{row['time']}}</td>
 					<td>{{row['location']}}</td>
@@ -35,7 +35,7 @@
 			%end
 				<tr class="overflow">
 					<td>*|id|*</td>
-					<td><a href="/pv/select/*|id|*">*|title|*</a></td>
+					<td><a href="/pv/*|id|*">*|title|*</a></td>
 					<td>*|date|*</td>
 					<td>*|time|*</td>
 					<td>*|location|*</td>
@@ -44,7 +44,7 @@
 				</tr>
 			</tbody>
 		</table>
-		<a href="/pv/new" class="button new pv"><button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">New PV</span></button></a>
+		<p class="buttons"><a href="/pv/new" class="button new pv"><button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">New PV</span></button></a></p>
 		<script type="text/javascript">
 			$(document).ready(function() {
 				assignButtonElements($('body'));
