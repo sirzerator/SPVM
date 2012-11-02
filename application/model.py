@@ -35,7 +35,7 @@ class Model:
 
 		current_level = 0
 		while current_level < recursion and rows_by_level:
-			rows_by_level.append(current_level+1)
+			rows_by_level.append(list())
 			for row in rows_by_level[current_level]:
 				if isinstance(self.has_many, dict):
 					for relation_name, relation_attributes in self.has_many.items():
