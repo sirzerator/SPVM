@@ -212,7 +212,7 @@ def get_pv(pv_id=None):
 		pv_data = pv.retrieve_one(where={'id':pv_id})
 
 		point = Point(db_hook)
-		points = point.retrieve(where={'pv_id':pv_id, 'parent_id':''})
+		points = point.retrieve(where={'pv_id':pv_id, 'parent_id':''}, recursion=2)
 
 		return template('main', pv_data=pv_data, points=points)
 

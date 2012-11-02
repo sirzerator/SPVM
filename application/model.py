@@ -25,18 +25,26 @@ class Model:
 
 		return validation_errors
 
-	def retrieve(self, fields=list('*'), where=None, order=None):
+	def retrieve(self, fields=list('*'), where=None, order=None, **options):
+		recursion = options['recursion'] if 'recursion' in options else 1;
+
 		base = self.db.retrieve(self.table, fields, where, order);
 
-		for row in base['rows']:
-			if isinstance(self.has_many, dict):
-				for relation_name, relation_attributes in self.has_many.items():
-					row_where = {relation_attributes['key']:row['id']}
+		rows_by_level = list()
+		rows_by_level.append(base['rows'])
 
-					if 'belongs_to' in relation_attributes:
-						row_where[self.belongs_to[relation_attributes['belongs_to']]['key']] = ''
+		current_level = 0
+		while current_level < recursion and rows_by_level:
+			rows_by_level.append(current_level+1)
+			for row in rows_by_level[current_level]:
+				if isinstance(self.has_many, dict):
+					for relation_name, relation_attributes in self.has_many.items():
+						row_where = {relation_attributes['key']:row['id']}
 
-					row[relation_name] = self.db.retrieve(relation_attributes['table'], '*', row_where)
+						row[relation_name] = self.db.retrieve(relation_attributes['table'], '*', row_where)
+
+						rows_by_level[current_level+1] = row[relation_name]['rows']
+			current_level += 1
 
 		return base
 
