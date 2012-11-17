@@ -212,7 +212,7 @@ def get_pv(pv_id=None):
 		pv_data = pv.retrieve_one(where={'id':pv_id})
 
 		point = Point(db_hook)
-		points = point.retrieve(where={'pv_id':pv_id, 'parent_id':''}, recursion=2)
+		points = point.retrieve(where={'pv_id':pv_id, 'parent_id':''}, recursion=3)
 
 		return template('main', pv_data=pv_data, points=points)
 
@@ -250,6 +250,21 @@ def get_new_point():
 
 	return template('point/new', pv_id=cookie_data['pv_id'], points=points, errors=dict())
 
+@route('/point/ajax/new', method='GET')
+def ajax_get_new_point():
+	cookie_data = request.get_cookie('spvm', dict(), secret='secret')
+
+	if not isinstance(cookie_data, dict) and cookie_is_encoded(cookie_data):
+		cookie_data = cookie_decode(cookie_data, 'key')
+
+	if 'pv_id' not in cookie_data or cookie_data['pv_id'] is None:
+		redirect('/')
+
+	point = Point(db_hook)
+	points = point.retrieve(where={'pv_id':cookie_data['pv_id']})
+
+	return template('point/ajax/new', pv_id=cookie_data['pv_id'], points=points, errors=dict())
+
 @route('/point/new', method='POST')
 def post_new_point():
 	fields = dict()
@@ -261,16 +276,91 @@ def post_new_point():
 
 	point = Point(db_hook)
 	validation_result = point.create(fields)
-	print(validation_result)
+
 	if isinstance(validation_result, dict):
 		point = Point(db_hook)
 		points = point.retrieve(where={'pv_id':fields['pv_id']})
 
-		print(validation_result)
-
 		return template('point/new', pv_id=fields['pv_id'], points=points, errors=validation_result)
 	else:
 		redirect('/pv/'+fields['pv_id'])
+
+@route('/point/ajax/new', method='POST')
+def ajax_post_new_point():
+	fields = dict()
+	fields['pv_id'] = request.forms.pv_id
+	fields['title'] = request.forms.title
+	fields['description'] = request.forms.description
+	fields['rank'] = request.forms.rank
+	fields['parent_id'] = request.forms.parent_id
+
+	point = Point(db_hook)
+	validation_result = point.create(fields)
+
+	if isinstance(validation_result, dict):
+		return validation_result
+	else:
+		return {'id': validation_result}
+
+### Edit
+@route('/point/edit/<point_id>', method='GET')
+def get_edit_point(point_id=None):
+	point = Point(db_hook)
+	data = point.retrieve_one(where={'id':point_id})
+
+	points = point.retrieve(where={'pv_id':data['pv_id']})
+
+	return template('point/edit', data=data, points=points, errors=dict())
+
+@route('/point/ajax/edit', method='GET')
+def ajax_get_edit_point():
+	point = Point(db_hook)
+	data = point.retrieve_one(where={'id':request.query.point_id})
+
+	points = point.retrieve(where={'pv_id':data['pv_id']})
+
+	return template('point/ajax/edit', data=data, points=points, errors=dict())
+
+@route('/point/edit', method='POST')
+def post_edit_point():
+	fields = dict()
+	fields['id'] = request.forms.point_id
+	fields['pv_id'] = request.forms.pv_id
+	fields['title'] = request.forms.title
+	fields['description'] = request.forms.description
+	fields['rank'] = request.forms.rank
+	fields['parent_id'] = request.forms.parent_id
+
+	point = Point(db_hook)
+	validation_result = point.update(fields, {'id': fields['id']})
+
+	if isinstance(validation_result, dict):
+		point = Point(db_hook)
+		data = point.retrieve_one(where={'id':fields['id']})
+
+		points = point.retrieve(where={'pv_id':fields['pv_id']})
+
+		return template('point/edit', data=data, points=points, errors=validation_result)
+	else:
+		redirect('/pv/'+fields['pv_id'])
+
+@route('/point/ajax/edit', method='POST')
+def post_edit_point():
+	fields = dict()
+	fields['id'] = request.forms.point_id
+	fields['pv_id'] = request.forms.pv_id
+	fields['title'] = request.forms.title
+	fields['description'] = request.forms.description
+	fields['rank'] = request.forms.rank
+	fields['parent_id'] = request.forms.parent_id
+
+	point = Point(db_hook)
+	validation_result = point.update(fields, {'id': fields['id']})
+
+	if isinstance(validation_result, dict):
+		return validation_result
+	else:
+		return {'id': validation_result}
 
 # Loading interface (controller/view)
 debug(True)

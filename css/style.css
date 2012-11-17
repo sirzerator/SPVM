@@ -16,3 +16,28 @@ ul.icons {
 		float:left;
 		margin:0 1px;
 	}
+
+.odj {
+	width:30%;
+}
+	.odj .points .point {
+		margin-bottom:0.1em;
+	}
+		.odj .points .point .text {
+			float:left;
+			clear:left;
+		}
+		.odj .points .point .icons {
+			float:right;
+		}
+	.odj .points.level0 {
+	}
+		.odj .points.level1 {
+			margin-left:2em;
+		}
+			.odj .points.level2 {
+				margin-left:3em;
+			}
+				.odj .points.level3 {
+					margin-left:4em;
+				}

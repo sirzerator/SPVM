@@ -1,11 +1,12 @@
 		<h1>SPVM</h1>
-		<h2>New Point</h2>
+		<h2>Edit Point</h2>
 		<div class="form clearfix">
-			<form id="point_new" action="/point/new" method="post">
-				<input type="hidden" id="pv_id" name="pv_id" value="{{pv_id}}" />
+			<form id="point_edit" action="/point/edit" method="post">
+				<input type="hidden" id="pv_id" name="pv_id" value="{{data['pv_id']}}" />
+				<input type="hidden" id="point_id" name="point_id" value="{{data['id']}}" />
 				<p class="field title">
 					<label for="title">Title</label><br />
-					<input class="text ui-widget-content ui-corner-all" type="text" name="title" id="title" />
+					<input class="text ui-widget-content ui-corner-all" type="text" name="title" id="title" value="{{data['title']}}" />
 					%if 'title' in errors.keys():
 						<br /><span class="error">{{errors['title']}}</span>
 					%else:
@@ -14,7 +15,7 @@
 				</p>
 				<p class="field description">
 					<label for="description">Description</label><br />
-					<input class="text ui-widget-content ui-corner-all" type="text" name="description" id="description" />
+					<input class="text ui-widget-content ui-corner-all" type="text" name="description" id="description" value="{{data['description']}}" />
 					%if 'description' in errors.keys():
 						<br /><span class="error">{{errors['description']}}</span>
 					%else:
@@ -23,7 +24,7 @@
 				</p>
 				<p class="field rank">
 					<label for="rank">Rank</label><br />
-					<input class="text ui-widget-content ui-corner-all" type="text" name="rank" id="rank" />
+					<input class="text ui-widget-content ui-corner-all" type="text" name="rank" id="rank" value="{{data['rank']}}" />
 					%if 'rank' in errors.keys():
 						<br /><span class="error">{{errors['rank']}}</span>
 					%else:
@@ -36,13 +37,13 @@
 						<option value="0">---</option>
 						%if points['count']:
 							%for point in points['rows']:
-								<option value="{{point['id']}}">{{point['title']}}</option>
+								<option value="{{point['id']}}"{{!' selected="selected"' if data['parent_id'] == point['id'] else str(data['parent_id'])}}>{{point['title']}}</option>
 							%end
 						%end
 					</select>
 				</p>
 				<p class="field submit">
-					<input class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" type="submit" value="Create" />
+					<input class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" type="submit" value="Edit" />
 				</p>
 			</form>
 		</div>
@@ -50,4 +51,4 @@
 			reassignUiElements();
 			assignButtonElements($('.form.clearfix'));
 		</script>
-		%rebase layout title='New Point &mdash; SPVM'
+		%rebase layout title='Edit Point &mdash; SPVM'
