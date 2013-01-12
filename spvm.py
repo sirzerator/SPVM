@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 from optparse import OptionParser
 import sys, os
+from collections import defaultdict
+
 from bottle import *
 from application.pv import PV
 from application.point import Point
@@ -68,11 +70,11 @@ def counter():
 ### New
 @route('/pv/new', method='GET')
 def get_new_pv():
-	return template('pv/new', errors=dict())
+	return template('pv/new', errors=dict(), data=defaultdict(lambda:''))
 
 @route('/pv/ajax/new', method='GET')
 def ajax_get_new_pv():
-	return template('pv/ajax/new', errors=dict())
+	return template('pv/ajax/new', errors=dict(), data=defaultdict(lambda:''))
 
 @route('/pv/new', method='POST')
 def post_new_pv():
@@ -86,7 +88,7 @@ def post_new_pv():
 	pv = PV(db_hook)
 	validation_result = pv.create(fields)
 	if isinstance(validation_result, dict):
-		return template('pv/new', errors=validation_result)
+		return template('pv/new', errors=validation_result, data=request.forms)
 	else:
 		redirect('/')
 
@@ -172,7 +174,7 @@ def ajax_get_delete_pv():
 @route('/pv/delete', method='POST')
 def post_delete_pv():
 	pv_id = request.forms.pv_id
-	if pv_id is None:
+	if 'yes' not in request.forms or 'no' in request.forms or pv_id is None:
 		redirect('/')
 	else:
 		pv = PV(db_hook)
@@ -361,6 +363,46 @@ def post_edit_point():
 		return validation_result
 	else:
 		return {'id': validation_result}
+
+### Delete
+@route('/point/delete/<point_id>')
+def get_delete_point(point_id=None):
+	if point_id is None:
+		redirect('/')
+	else:
+		return template('point/delete', point_id=point_id)
+
+@route('/point/ajax/delete', method='GET')
+def ajax_get_delete_point():
+	point_id = request.query.point_id
+	return template('point/ajax/delete', point_id=point_id)
+
+@route('/point/delete', method='POST')
+def post_delete_point():
+	point_id = request.forms.point_id
+
+	point = Point(db_hook)
+	pv_id = point.retrieve_one(where={'id':point_id})['pv_id']
+
+	if 'yes' not in request.forms or 'no' in request.forms or point_id is None:
+		redirect('/pv/' + str(pv_id))
+	else:
+		if point.delete({'id':point_id}):
+			redirect('/pv/' + str(pv_id))
+		else:
+			print('Error. Do something.') # TODO
+
+@route('/point/ajax/delete', method='POST')
+def ajax_post_delete_point():
+	point_id = request.forms.point_id
+	if point_id is None:
+		redirect('/')
+	else:
+		point = Point(db_hook)
+		if point.delete({'id':point_id}):
+			redirect('/')
+		else:
+			print('Error. Do something.') # TODO
 
 # Loading interface (controller/view)
 debug(True)

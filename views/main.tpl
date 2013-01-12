@@ -7,7 +7,7 @@
 
 			%for point in points:
 				<div class="points level{{level}}">
-					<div class="point clearfix">
+					<div id="point_{{point['id']}}" class="point clearfix">
 						<div class="text">
 							<span class="number">
 							%number = ""
@@ -59,11 +59,17 @@
 					<span class="number">1.</span>
 					<input class="title placeholder" value="Click here to add a new point" />
 				</div>
-				<div class="overflow point">
-					<span class="number">1.</span>
-
-				</div>
 			%end
+			<div class="point overflow">
+				<div class="text">
+					<span class="number">
+					*|number|*
+					</span>
+					&nbsp;
+					<span class="title">*|title|*</span>
+						&mdash; <span class="description">*|description|*</span>
+				</div>
+			</div>
 		</div>
 		<script type="text/javascript">
 			$(document).ready(function() {
@@ -78,6 +84,7 @@
 						height:280,
 						modal:true,
 						resizable:false,
+						beforeDone: function() {alert('ok')},
 						beforeClose: function() {}
 					}
 					castDialog('point', 'new', properties, null);
@@ -92,9 +99,25 @@
 						height:280,
 						modal:true,
 						resizable:false,
+						beforeDone: function() {},
 						beforeClose: function() {}
 					}
 					castDialog('point', 'edit', properties, "point_id=" + $(this).attr('rel'));
+				});
+				$(".odj").delegate(".point.delete", "click", function(e) {
+					e.preventDefault();
+					properties = {
+						title:"Are you sure you want to delete this point ?",
+						OK:"Yes",
+						Cancel:"No",
+						width:320,
+						height:125,
+						modal:true,
+						resizable:false,
+						beforeDone: function() {},
+						beforeClose: function() {}
+					}
+					castDialog('point', 'delete', properties, "point_id=" + $(this).attr('rel'));
 				});
 			});
 		</script>

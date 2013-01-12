@@ -49,40 +49,42 @@ function castDialog(model, action, properties, arguments) {
 		$('#' + model + '_ajax_' + action + ' input').each(function(i, el) {
 			data[$(el).attr('id')] = $(el).val();
 		});
-		console.log(data);
+
 		$.ajax("/" + model + "/ajax/" + action, {
 			type: 'post',
 			data: data
 		}).done(function(response) {
 			if (action == 'new' || action == 'edit') {
 				if (response['id']) {
-					newRow = null;
+					newEl = null;
 					if (action == 'edit') {
-						newRow = $("#" + model + "_" + response['id']);
-						newRow.html($("table." + model + " tbody .overflow").html());
+						newEl = $("#" + model + "_" + response['id']);
+						newEl.html($("." + model + ".overflow").html());
 					} else if (action == 'new') {
-						newRow = $("table." + model + " tbody .overflow").clone();
+						newEl = $("." + model + ".overflow").clone();
 					}
 
+					console.log(newEl.html());
+
 					var placeholdersRegExp=/\*\|(.+?)\|\*/g;
-					results = newRow.html().match(placeholdersRegExp);
+					results = newEl.html().match(placeholdersRegExp);
 
 					for (i = 0; i < results.length; i++) {
 						if (results[i].substr(2,2) == 'id') {
-							newRow.attr('id', model + '_' + response['id']);
-							newRow.html(newRow.html().replace(/\*\|id\|\*/g, ""+response['id']));
-							newRow.html(newRow.html().replace(/\*%7Cid%7C\*/g, ""+response['id']));
+							newEl.attr('id', model + '_' + response['id']);
+							newEl.html(newEl.html().replace(/\*\|id\|\*/g, ""+response['id']));
+							newEl.html(newEl.html().replace(/\*%7Cid%7C\*/g, ""+response['id']));
 						} else {
 							variableName = results[i].substr(2, results[i].length-4);
 							var currentPlaceholderRegex = new RegExp("\\*\\|" + variableName + "\\|\\*", "g");
-							newRow.html(newRow.html().replace(currentPlaceholderRegex, $('#' + variableName).val()));
+							newEl.html(newEl.html().replace(currentPlaceholderRegex, $('#' + variableName).val()));
 						}
 					}
 
-					$("table." + model + " tbody tr.nothing").hide();
+					$("." + model + ".nothing").hide();
 
 					if (action == 'new') {
-						newRow.insertBefore($("table." + model + " tbody tr").last()).fadeIn().removeClass("overflow");
+						newEl.insertBefore($("." + model + ".overflow")).fadeIn().removeClass("overflow");
 					}
 
 					$("#" + model + '_' + action + '_dialog').dialog("close");
@@ -98,6 +100,10 @@ function castDialog(model, action, properties, arguments) {
 
 				$("#" + model + '_' + action + '_dialog').dialog("close");
 				$("#" + model + '_' + action + '_dialog').remove();
+			}
+
+			if (properties['beforeDone']) {
+				properties.beforeDone();
 			}
 		});
 	}
@@ -124,8 +130,11 @@ function castDialog(model, action, properties, arguments) {
 		}
 	});
 
-	$("#" + model + '_' + action + '_dialog').load("/" + model + "/ajax/" + action, arguments, function() {
-		reassignUiElements();
-		$(this).dialog("open");
-	});
+	$("#" + model + '_' + action + '_dialog')
+	.load("/" + model + "/ajax/" + action, arguments,
+		function() {
+			reassignUiElements();
+			$(this).dialog("open");
+		}
+	);
 }

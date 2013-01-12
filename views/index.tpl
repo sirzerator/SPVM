@@ -1,6 +1,6 @@
 		<h1>SPVM</h1>
 		<h2>PVs</h2>
-		<table class="pv">
+		<table class="pvs">
 			<thead>
 				<th>#</th>
 				<th>Titre</th>
@@ -13,7 +13,7 @@
 			<tbody>
 			%if pvs['count']:
 				%for row in pvs['rows']:
-				<tr id="pv_{{row['id']}}">
+				<tr class="pv" id="pv_{{row['id']}}">
 					<td>{{row['id']}}</td>
 					<td><a href="/pv/{{row['id']}}">{{row['title']}}</a></td>
 					<td>{{row['date']}}</td>
@@ -29,11 +29,11 @@
 				</tr>
 				%end
 			%else:
-				<tr class="nothing">
+				<tr class="pv nothing">
 					<td colspan="7">Nothing to display.</td>
 				</tr>
 			%end
-				<tr class="overflow">
+				<tr class="pv overflow">
 					<td>*|id|*</td>
 					<td><a href="/pv/*|id|*">*|title|*</a></td>
 					<td>*|date|*</td>
@@ -62,11 +62,22 @@
 					}
 					castDialog('pv', 'new', properties, null);
 				});
-				$("table.pv").delegate(".pv.delete", "click", function(e) {
+				$(".pvs").delegate(".pv.delete", "click", function(e) {
 					e.preventDefault();
-					castDialog('pv', 'delete', {title:"Are you sure you want to delete this PV ?", OK:"Yes", Cancel:"No", width:300, height:125, modal:true, resizable:false}, "pv_id=" + $(this).attr('rel'));
+					properties = {
+						title:"Are you sure you want to delete this PV ?",
+						OK:"Yes",
+						Cancel:"No",
+						width:300,
+						height:125,
+						modal:true,
+						resizable:false,
+						beforeDone: function() {},
+						beforeClose: function() {}
+					}
+					castDialog('pv', 'delete', properties, "pv_id=" + $(this).attr('rel'));
 				});
-				$("table.pv").delegate(".pv.edit", "click", function(e) {
+				$(".pvs").delegate(".pv.edit", "click", function(e) {
 					e.preventDefault();
 					properties = {
 						title:"Edit PV",
