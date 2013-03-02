@@ -30,21 +30,21 @@ class Model:
 
 		base = self.db.retrieve(self.table, fields, where, order);
 
-		rows_by_level = list()
-		rows_by_level.append(base['rows'])
+		if isinstance(self.has_many, dict):
+			rows_by_level = list()
+			rows_by_level.append(base['rows'])
 
-		current_level = 0
-		while current_level < recursion and rows_by_level:
-			rows_by_level.append(list())
-			for row in rows_by_level[current_level]:
-				if isinstance(self.has_many, dict):
+			current_level = 0
+			while current_level < recursion and rows_by_level:
+				rows_by_level.append(list())
+				for row in rows_by_level[current_level]:
 					for relation_name, relation_attributes in self.has_many.items():
 						row_where = {relation_attributes['key']:row['id']}
 
 						row[relation_name] = self.db.retrieve(relation_attributes['table'], '*', row_where)
 
-						rows_by_level[current_level+1] = row[relation_name]['rows']
-			current_level += 1
+						rows_by_level[current_level+1].extend(row[relation_name]['rows'])
+				current_level += 1
 
 		return base
 

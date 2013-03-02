@@ -49,6 +49,9 @@ function castDialog(model, action, properties, arguments) {
 		$('#' + model + '_ajax_' + action + ' input').each(function(i, el) {
 			data[$(el).attr('id')] = $(el).val();
 		});
+		$('#' + model + '_ajax_' + action + ' select').each(function(i, el) {
+			data[$(el).attr('id')] = $(el).val();
+		});
 
 		$.ajax("/" + model + "/ajax/" + action, {
 			type: 'post',
@@ -57,32 +60,95 @@ function castDialog(model, action, properties, arguments) {
 			if (action == 'new' || action == 'edit') {
 				if (response['id']) {
 					newEl = null;
+					console.log(action);
 					if (action == 'edit') {
 						newEl = $("#" + model + "_" + response['id']);
 						newEl.html($("." + model + ".overflow").html());
 					} else if (action == 'new') {
 						newEl = $("." + model + ".overflow").clone();
 					}
+					console.log(newEl);
 
-					console.log(newEl.html());
+					// Conditional blocks (positive)
+					var conditionalsRegExp=/\?\|(.+?)\|\?/g;
+					results = newEl.html().match(conditionalsRegExp);
 
-					var placeholdersRegExp=/\*\|(.+?)\|\*/g;
-					results = newEl.html().match(placeholdersRegExp);
-
-					for (i = 0; i < results.length; i++) {
-						if (results[i].substr(2,2) == 'id') {
-							newEl.attr('id', model + '_' + response['id']);
-							newEl.html(newEl.html().replace(/\*\|id\|\*/g, ""+response['id']));
-							newEl.html(newEl.html().replace(/\*%7Cid%7C\*/g, ""+response['id']));
-						} else {
+					if (results) {
+						for (i = 0; i < results.length; i += 2) {
 							variableName = results[i].substr(2, results[i].length-4);
-							var currentPlaceholderRegex = new RegExp("\\*\\|" + variableName + "\\|\\*", "g");
-							newEl.html(newEl.html().replace(currentPlaceholderRegex, $('#' + variableName).val()));
+							var innerConditionalRegExp = new RegExp("\\?\\|" + variableName + "\\|\\?", "g");
+
+							innerConditionalRegExp.exec(newEl.html());
+							var begin = innerConditionalRegExp.lastIndex;
+
+							innerConditionalRegExp.exec(newEl.html());
+							var end = innerConditionalRegExp.lastIndex;
+
+							if ($('#' + variableName).val() == "" || $('#' + variableName).val() == undefined) {
+								newEl.html(newEl.html().substr(0, begin) + newEl.html().substr(end));
+							}
+
+							newEl.html(newEl.html().replace(innerConditionalRegExp, ""));
 						}
 					}
 
+					console.log(newEl);
+
+					// Conditional blocks (negative)
+					var conditionalsRegExp=/:\|(.+?)\|:/g;
+					results = newEl.html().match(conditionalsRegExp);
+
+					if (results) {
+						for (i = 0; i < results.length; i += 2) {
+							variableName = results[i].substr(2, results[i].length-4);
+							var innerConditionalRegExp = new RegExp(":\\|" + variableName + "\\|:", "g");
+
+							innerConditionalRegExp.exec(newEl.html());
+							var begin = innerConditionalRegExp.lastIndex;
+
+							innerConditionalRegExp.exec(newEl.html());
+							var end = innerConditionalRegExp.lastIndex;
+
+							console.log(variableName);
+							console.log($('#' + variableName).val());
+
+							if ($('#' + variableName).val() != "" && $('#' + variableName).val() != undefined) {
+								newEl.html(newEl.html().substr(0, begin) + newEl.html().substr(end));
+							}
+
+							newEl.html(newEl.html().replace(innerConditionalRegExp, ""));
+						}
+					}
+
+					console.log(newEl);
+
+					// Variable replacement
+					var placeholdersRegExp=/\*\|(.+?)\|\*/g;
+					results = newEl.html().match(placeholdersRegExp);
+
+					if (results) {
+						for (i = 0; i < results.length; i++) {
+							if (results[i].substr(2,2) == 'id') {
+								newEl.attr('id', model + '_' + response['id']);
+								newEl.html(newEl.html().replace(/\*\|id\|\*/g, ""+response['id']));
+								newEl.html(newEl.html().replace(/\*%7Cid%7C\*/g, ""+response['id']));
+							} else {
+								variableName = results[i].substr(2, results[i].length-4);
+								var currentPlaceholderRegex = new RegExp("\\*\\|" + variableName + "\\|\\*", "g");
+								newEl.html(newEl.html().replace(currentPlaceholderRegex, $('#' + variableName).val()));
+							}
+						}
+					}
+
+					console.log(newEl);
+
 					$("." + model + ".nothing").hide();
 
+					if (properties['beforeDone']) {
+						properties.beforeDone(response, newEl);
+					}
+
+					console.log(newEl);
 					if (action == 'new') {
 						newEl.insertBefore($("." + model + ".overflow")).fadeIn().removeClass("overflow");
 					}
@@ -100,10 +166,6 @@ function castDialog(model, action, properties, arguments) {
 
 				$("#" + model + '_' + action + '_dialog').dialog("close");
 				$("#" + model + '_' + action + '_dialog').remove();
-			}
-
-			if (properties['beforeDone']) {
-				properties.beforeDone();
 			}
 		});
 	}

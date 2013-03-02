@@ -302,7 +302,10 @@ def ajax_post_new_point():
 	if isinstance(validation_result, dict):
 		return validation_result
 	else:
-		return {'id': validation_result}
+		point = Point(db_hook)
+		record = point.retrieve_one(where={'id':validation_result})
+
+		return {'id': validation_result, 'parent_id':record['parent_id']}
 
 ### Edit
 @route('/point/edit/<point_id>', method='GET')

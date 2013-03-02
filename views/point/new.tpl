@@ -33,7 +33,7 @@
 				<p class="field parent">
 					<label for="parent_id">Parent</label><br />
 					<select id="parent_id" name="parent_id">
-						<option value="0">---</option>
+						<option value="">---</option>
 						%if points['count']:
 							%for point in points['rows']:
 								<option value="{{point['id']}}">{{point['title']}}</option>

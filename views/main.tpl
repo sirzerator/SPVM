@@ -37,20 +37,25 @@
 				%counters[level] += 1
 			%end
 		%end
-		<h1>SPVM</h1>
-		<div class="controls">
-			<span class="configuration"></span>
-			<span class="quit"><a href="/pv/close">Close</a></span>
+		<div class="header clearfix">
+			<div class="spvm"><h1>SPVM</h1></div>
+			<div class="title"><h2>{{pv_data['title']}}</h2></div>
+			<div class="controls">
+				<span class="configuration"></span>
+				<span class="quit"><a href="/pv/close">Close</a></span>
+			</div>
 		</div>
-		<h2>{{pv_data['title']}}</h2>
-		<div class="informations toggle">
-			<div class="title">Informations</div>
-			<div class="location">{{pv_data['location']}}</div>
-			<div class="date time">{{pv_data['date']}} {{pv_data['time']}}</div>
-			<div class="description">{{pv_data['description']}}</div>
-			<div class="modified">{{pv_data['modified']}}</div>
+		<div class="informations toggle horizontal">
+			<div class="button over"></div>
+			<div class="content">
+				<div class="title">Informations</div>
+				<div class="location">{{pv_data['location']}}</div>
+				<div class="date time">{{pv_data['date']}} {{pv_data['time']}}</div>
+				<div class="description">{{pv_data['description']}}</div>
+				<div class="modified">{{pv_data['modified']}}</div>
+			</div>
 		</div>
-		<div class="odj left">
+		<div class="odj left panel">
 			<p class="buttons"><a href="/point/new" class="button new point"><button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">New Point</span></button></a></p>
 			%if points['count']:
 				%tree(points['rows'], 0, list())
@@ -66,9 +71,13 @@
 					*|number|*
 					</span>
 					&nbsp;
-					<span class="title">*|title|*</span>
-						&mdash; <span class="description">*|description|*</span>
+					<span class="title">*|title|*</span>?|description|?
+						&mdash; <span class="description">*|description|*</span>?|description|?
 				</div>
+				<ul class="icons ui-widget ui-helper-clearfix">
+					<li class="ui-state-default ui-corner-all"><a href="/point/edit/*|id|*" class="point edit" rel="*|id|*" title="Edit"><span class="ui-icon ui-icon-pencil"></span></a></li>
+					<li class="ui-state-default ui-corner-all"><a href="/point/delete/*|id|*" class="point delete" rel="*|id|*" title="Delete"><span class="ui-icon ui-icon-trash"></span></a></li>
+				</ul>
 			</div>
 		</div>
 		<script type="text/javascript">
@@ -84,7 +93,7 @@
 						height:280,
 						modal:true,
 						resizable:false,
-						beforeDone: function() {alert('ok')},
+						beforeDone: function() {},
 						beforeClose: function() {}
 					}
 					castDialog('point', 'new', properties, null);

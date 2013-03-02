@@ -1,43 +1,4 @@
-body {
-	font-size:12px;
+.panel {
+	background-color:#d5d5d5;
+	border-right:4px ridge #d5d5d5;
 }
-
-.overflow, .ajax {
-	display:none;
-}
-
-ul.icons {
-	list-style-type:none;
-	margin:0;
-	padding:0;
-}
-	ul.icons li {
-		width:16px;
-		float:left;
-		margin:0 1px;
-	}
-
-.odj {
-	width:30%;
-}
-	.odj .points .point {
-		margin-bottom:0.1em;
-	}
-		.odj .points .point .text {
-			float:left;
-			clear:left;
-		}
-		.odj .points .point .icons {
-			float:right;
-		}
-	.odj .points.level0 {
-	}
-		.odj .points.level1 {
-			margin-left:2em;
-		}
-			.odj .points.level2 {
-				margin-left:3em;
-			}
-				.odj .points.level3 {
-					margin-left:4em;
-				}
