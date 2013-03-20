@@ -60,14 +60,12 @@ function castDialog(model, action, properties, arguments) {
 			if (action == 'new' || action == 'edit') {
 				if (response['id']) {
 					newEl = null;
-					console.log(action);
 					if (action == 'edit') {
 						newEl = $("#" + model + "_" + response['id']);
 						newEl.html($("." + model + ".overflow").html());
 					} else if (action == 'new') {
 						newEl = $("." + model + ".overflow").clone();
 					}
-					console.log(newEl);
 
 					// Conditional blocks (positive)
 					var conditionalsRegExp=/\?\|(.+?)\|\?/g;
@@ -91,8 +89,6 @@ function castDialog(model, action, properties, arguments) {
 							newEl.html(newEl.html().replace(innerConditionalRegExp, ""));
 						}
 					}
-
-					console.log(newEl);
 
 					// Conditional blocks (negative)
 					var conditionalsRegExp=/:\|(.+?)\|:/g;
@@ -120,8 +116,6 @@ function castDialog(model, action, properties, arguments) {
 						}
 					}
 
-					console.log(newEl);
-
 					// Variable replacement
 					var placeholdersRegExp=/\*\|(.+?)\|\*/g;
 					results = newEl.html().match(placeholdersRegExp);
@@ -140,15 +134,13 @@ function castDialog(model, action, properties, arguments) {
 						}
 					}
 
-					console.log(newEl);
-
 					$("." + model + ".nothing").hide();
 
 					if (properties['beforeDone']) {
-						properties.beforeDone(response, newEl);
+						newEl = properties.beforeDone(response, newEl);
+
 					}
 
-					console.log(newEl);
 					if (action == 'new') {
 						newEl.insertBefore($("." + model + ".overflow")).fadeIn().removeClass("overflow");
 					}
@@ -162,6 +154,12 @@ function castDialog(model, action, properties, arguments) {
 					}
 				}
 			} else if (action == 'delete') {
+				if (properties['beforeDone']) {
+					var element = $("#" + model + "_" + data[model + "_id"]);
+					console.log(element);
+					properties.beforeDone(response, element);
+				}
+
 				$("#" + model + "_" + data[model + "_id"]).fadeOut();
 
 				$("#" + model + '_' + action + '_dialog').dialog("close");

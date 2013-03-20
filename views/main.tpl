@@ -30,8 +30,8 @@
 						</ul>
 					</div>
 
-					%if 'children' in point and point['children']['count']:
-						%tree(point['children']['rows'], level+1, counters)
+					%if 'subpoints' in point and point['subpoints']['count']:
+						%tree(point['subpoints']['rows'], level+1, counters)
 					%end
 				</div>
 				%counters[level] += 1
@@ -41,8 +41,10 @@
 			<div class="spvm"><h1>SPVM</h1></div>
 			<div class="title"><h2>{{pv_data['title']}}</h2></div>
 			<div class="controls">
-				<span class="configuration"></span>
-				<span class="quit"><a href="/pv/close">Close</a></span>
+				<ul class="icons ui-widget ui-helper-clearfix">
+					<li class="ui-state-default ui-corner-all"><a title="Configure" rel="22" class="pv config" href="/pv/config"><span class="ui-icon ui-icon-wrench"></span></a></li>
+					<li class="ui-state-default ui-corner-all"><a title="Close" rel="22" class="pv close" href="/pv/close"><span class="ui-icon ui-icon-close"></span></a></li>
+				</ul>
 			</div>
 		</div>
 		<div class="informations toggle horizontal">
@@ -60,12 +62,11 @@
 			%if points['count']:
 				%tree(points['rows'], 0, list())
 			%else:
-				<div class="ajax point">
-					<span class="number">1.</span>
-					<input class="title placeholder" value="Click here to add a new point" />
+				<div class="nothing point">
+					<span>No points.</span>
 				</div>
 			%end
-			<div class="point overflow">
+			<div class="point clearfix overflow">
 				<div class="text">
 					<span class="number">
 					*|number|*
@@ -93,7 +94,17 @@
 						height:280,
 						modal:true,
 						resizable:false,
-						beforeDone: function() {},
+						beforeDone: function(response, element) {
+							if (response['parent_id'] == "") {
+								wrapperEl = $('<div class="overflow points level0"></div>');
+								element.removeClass('overflow');
+								wrapperEl.append(element);
+
+								return wrapperEl;
+							}
+
+							return element;
+						},
 						beforeClose: function() {}
 					}
 					castDialog('point', 'new', properties, null);
@@ -123,7 +134,10 @@
 						height:125,
 						modal:true,
 						resizable:false,
-						beforeDone: function() {},
+						beforeDone: function(response, element) {
+							console.log(element);
+							$(element).next('.points').fadeOut();
+						},
 						beforeClose: function() {}
 					}
 					castDialog('point', 'delete', properties, "point_id=" + $(this).attr('rel'));

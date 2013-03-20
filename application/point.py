@@ -48,9 +48,11 @@ class Point(Model):
 			}
 		}
 		self.has_many = {
-			'children': {
+			'subpoints': {
 				'table':'point',
-				'key':'parent_id'
+				'key':'parent_id',
+				'delete':'cascade',
+				'update':None
 			}
 		}
 		self.description = '''

@@ -14,11 +14,13 @@ class DBModule:
 		self.c.close()
 
 	def create_table(self, string):
+		print(string)
 		self.c.execute(string)
 
 		self.conn.commit()
 
 	def last_insert_rowid(self):
+		print("SELECT last_insert_rowid()")
 		self.c.execute("SELECT last_insert_rowid()")
 		for row in self.c:
 			insert_id = row[0]
@@ -103,9 +105,9 @@ class DBModule:
 				for field, value in fields.items():
 					try:
 						int(value)
-						fields_query.append(field + ' = ' + value)
+						fields_query.append(field + ' = ' + str(value))
 					except(ValueError):
-						fields_query.append(field + ' = "' + value + '"')
+						fields_query.append(field + ' = "' + str(value) + '"')
 			else:
 				fields_query.append(fields)
 
@@ -116,9 +118,9 @@ class DBModule:
 				for field, value in where.items():
 					try:
 						int(value)
-						where_fields.append(field + ' = ' + value)
+						where_fields.append(field + ' = ' + str(value))
 					except(ValueError):
-						where_fields.append(field + ' = "' + value + '"')
+						where_fields.append(field + ' = "' + str(value) + '"')
 					query +=  ' WHERE {0}'.format(' AND '.join(where_fields));
 
 			query += ';'
@@ -140,9 +142,9 @@ class DBModule:
 			for field, value in where.items():
 				try:
 					int(value)
-					where_fields.append(field + ' = ' + value)
+					where_fields.append(field + ' = ' + str(value))
 				except(ValueError):
-					where_fields.append(field + ' = "' + value + '"')
+					where_fields.append(field + ' = "' + str(value) + '"')
 
 			print('DELETE FROM {0} WHERE {1};'.format(table, ' AND '.join(where_fields)))
 			try:

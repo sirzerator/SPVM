@@ -57,7 +57,9 @@ class PV(Model):
 		self.has_many = {
 			'points': {
 				'table':'point',
-				'key':'pv_id'
+				'key':'pv_id',
+				'delete':'cascade',
+				'update':None
 			}
 		}
 		self.description = '''

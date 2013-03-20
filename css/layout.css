@@ -16,6 +16,7 @@ body {
 	}
 	.header .controls {
 		float:right;
+		padding-top:2px;
 	}
 
 .panel {
@@ -26,7 +27,7 @@ body {
 
 
 .overflow, .ajax {
-	display:none;
+	display:none !important;
 }
 
 .toggle {
@@ -58,22 +59,32 @@ ul.icons {
 }
 	.odj .points .point {
 		margin-bottom:0.1em;
+		line-height:18px;
+	}
+	.odj .points .point:hover {
+		background-color:#CCCCCC;
 	}
 		.odj .points .point .text {
 			float:left;
 			clear:left;
+			line-height:18px;
 		}
 		.odj .points .point .icons {
-			float:right;
+			position:absolute;
+			right:0;
+			display:none;
 		}
-	.odj .points.level0 {
+		.odj .points .point:hover .icons {
+			display:block;
+		}
+	.odj .points.level0 > .point {
 	}
-	.odj .points.level1 {
-		margin-left:2em;
+	.odj .points.level1 > .point {
+		padding-left:2em;
 	}
-	.odj .points.level2 {
-		margin-left:3em;
+	.odj .points.level2 > .point {
+		padding-left:4em;
 	}
-	.odj .points.level3 {
-		margin-left:4em;
+	.odj .points.level3 > .point {
+		padding-left:6em;
 	}
