@@ -65,5 +65,39 @@ class Point(Model):
 				"rank" INTEGER NOT NULL DEFAULT 0
 			)
 		'''
-
+		
 		super(Point, self).__init__(db)
+		
+	def get_numbering(self, point_id):
+		numbering = ""
+		
+		point = self.retrieve_one(where={'id': point_id})
+		
+		if point['parent_id'] != "0" and point['parent_id'] != "":
+			numbering += str(self.get_numbering(point['parent_id']))
+			
+			all_points = self.retrieve(where={'pv_id': point['pv_id'], 'parent_id': point['parent_id']}, order='rank ASC', recursion=0)
+			
+			point_number = 1
+			print(all_points)
+			for point in all_points['rows']:
+				if point['id'] != point_id:
+					point_number += 1
+				else:
+					break;
+						
+			numbering += str(point_number) + '.'
+		else:
+			all_points = self.retrieve(where={'pv_id': point['pv_id'], 'parent_id': ""}, order='rank ASC', recursion=0)
+			
+			point_number = 1
+			print(all_points)
+			for point in all_points['rows']:
+				if point['id'] != point_id:
+					point_number += 1
+				else:
+					break;
+					
+			numbering += str(point_number) + '.'
+		
+		return numbering

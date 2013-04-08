@@ -19,6 +19,18 @@ body {
 		padding-top:2px;
 	}
 
+.footer {
+	bottom: 0;
+	height: 2em;
+	position: fixed;
+	width: 100%;
+	background:green;
+	line-height:2em;
+}
+	.footer .status {
+		text-align:center;
+	}
+
 .panel {
 	position:absolute;
 	top:2em;

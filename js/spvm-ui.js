@@ -129,7 +129,13 @@ function castDialog(model, action, properties, arguments) {
 							} else {
 								variableName = results[i].substr(2, results[i].length-4);
 								var currentPlaceholderRegex = new RegExp("\\*\\|" + variableName + "\\|\\*", "g");
-								newEl.html(newEl.html().replace(currentPlaceholderRegex, $('#' + variableName).val()));
+								
+								var variableValue = $('#' + variableName).val();
+								if (variableValue == undefined) {
+									newEl.html(newEl.html().replace(currentPlaceholderRegex, response[variableName]));
+								} else {
+									newEl.html(newEl.html().replace(currentPlaceholderRegex, variableValue));
+								}
 							}
 						}
 					}

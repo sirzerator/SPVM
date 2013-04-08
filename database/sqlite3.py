@@ -68,6 +68,9 @@ class DBModule:
 					where_fields.append(where)
 
 				query +=  ' WHERE {0}'.format(' AND '.join(where_fields));
+				
+			if order is not None:
+				query += ' ORDER BY ' + order
 
 			query += ';'
 
@@ -128,6 +131,7 @@ class DBModule:
 			try:
 				print(query)
 				self.c.execute(query)
+				self.conn.commit()
 			except:
 				print('DB Error.')
 				return False

@@ -81,6 +81,9 @@
 				</ul>
 			</div>
 		</div>
+		<div class="footer clearfix">
+			<div class="status"><p>Status bar</p></div>
+		</div>
 		<script type="text/javascript">
 			$(document).ready(function() {
 				assignButtonElements($('body'));

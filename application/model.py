@@ -43,7 +43,7 @@ class Model:
 					for relation_name, relation_attributes in self.has_many.items():
 						row_where = {relation_attributes['key']:row['id']}
 
-						row[relation_name] = self.db.retrieve(relation_attributes['table'], '*', row_where)
+						row[relation_name] = self.db.retrieve(relation_attributes['table'], fields, row_where, order)
 
 						rows_by_level[current_level+1].extend(row[relation_name]['rows'])
 				current_level += 1

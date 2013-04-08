@@ -215,7 +215,7 @@ def get_pv(pv_id=None):
 
 		pv_data = pv_hook.retrieve_one(where={'id':pv_id})
 
-		points = point_hook.retrieve(where={'pv_id':pv_id, 'parent_id':''}, recursion=3)
+		points = point_hook.retrieve(where={'pv_id':pv_id, 'parent_id':''}, order="rank ASC", recursion=3)
 
 		return template('main', pv_data=pv_data, points=points)
 
@@ -305,7 +305,7 @@ def ajax_post_new_point():
 	else:
 		record = point_hook.retrieve_one(where={'id':validation_result})
 
-		return {'id': validation_result, 'parent_id':record['parent_id']}
+		return {'id': validation_result, 'parent_id': record['parent_id'], 'number': point_hook.get_numbering(int(validation_result))}
 
 ### Edit
 @route('/point/edit/<point_id>', method='GET')
@@ -360,7 +360,7 @@ def post_edit_point():
 	if isinstance(validation_result, dict):
 		return validation_result
 	else:
-		return {'id': validation_result}
+		return {'id': validation_result, 'number': point_hook.get_numbering(int(validation_result))}
 
 ### Delete
 @route('/point/delete/<point_id>')
