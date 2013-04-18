@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from application.model import Model
-from datetime import datetime
 
 
 class Point(Model):
@@ -10,19 +9,12 @@ class Point(Model):
 		self.rows = [
 			'id',
 			'pv_id',
-			'parent_id'
+			'parent_id',
 			'title',
 			'description',
 			'rank'
 		]
 		self.validation = {
-				'pv_id': {
-					'type': int,
-					'required': True
-				},
-				'parent_id': {
-					'type': int
-				},
 				'title': {
 					'type': str,
 					'minLength': 1,
@@ -34,7 +26,9 @@ class Point(Model):
 					'type': str
 				},
 				'rank': {
-					'type': int
+					'type': int,
+					'default': 0,
+					'required': True
 				}
 		}
 		self.belongs_to = {
@@ -55,14 +49,14 @@ class Point(Model):
 				'update':None
 			}
 		}
-		self.description = '''
-			CREATE  TABLE  IF NOT EXISTS "point" (
+		self.old_description = '''
+			CREATE TABLE  IF NOT EXISTS "point" (
 				"id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 				"pv_id" INTEGER NOT NULL,
 				"parent_id" INTEGER,
 				"title" TEXT NOT NULL,
 				"description" TEXT,
-				"rank" INTEGER NOT NULL DEFAULT 0
+				"rank" INTEGER DEFAULT 0
 			)
 		'''
 		

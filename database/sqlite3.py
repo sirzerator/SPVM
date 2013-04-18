@@ -35,7 +35,7 @@ class DBModule:
 			for value in fields.values():
 				try:
 					int(value)
-					values.append(value)
+					values.append(str(value))
 				except(ValueError):
 					values.append('"' + value + '"')
 

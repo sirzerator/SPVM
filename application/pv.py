@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from application.model import Model
-from datetime import datetime
+from datetime import date, time, datetime
 
 
 class PV(Model):
@@ -10,7 +10,7 @@ class PV(Model):
 		self.rows = [
 			'id',
 			'user_id', # TODO
-			'title'
+			'title',
 			'date',
 			'time',
 			'location',
@@ -21,38 +21,25 @@ class PV(Model):
 			'modified'
 		]
 		self.validation = {
-				'user_id': {
-					'type': int
-				},
-				'title': {
-					'type': str,
-					'minLength': 1,
-					'maxLength': 100,
-					'empty': False,
-					'required': True
-				},
-				'date': {
-					'type': str,
-					'dateFormat': '%Y-%m-%d',
-					'required': True
-				},
-				'time': {
-					'type': str,
-					'dateFormat': '%H:%M:%S',
-					'required': True
-				},
-				'location': {
-					'type': str
-				},
-				'description': {
-					'type': str
-				},
-				'code_id': {
-					'type': int
-				},
-				'lock_id': {
-					'type': int
-				}
+			'title': {
+				'type': str,
+				'minLength': 1,
+				'maxLength': 100,
+				'empty': False,
+				'required': True
+			},
+			'date': {
+				'type': date,
+				'dateFormat': '%Y-%m-%d',
+				'default': 'CURRENT_DATE',
+				'required': True
+			},
+			'time': {
+				'type': time,
+				'dateFormat': '%H:%M:%S',
+				'default': 'CURRENT_TIME',
+				'required': True
+			}
 		}
 		self.has_many = {
 			'points': {
@@ -62,7 +49,7 @@ class PV(Model):
 				'update':None
 			}
 		}
-		self.description = '''
+		self.old_description = '''
 			CREATE TABLE IF NOT EXISTS "pv" (
 				"id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 				"user_id" INTEGER NOT NULL DEFAULT 0,

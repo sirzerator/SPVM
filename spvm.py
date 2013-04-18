@@ -38,9 +38,9 @@ db_hook = db_module.DBModule(options.database, options.username, options.passwor
 
 # Loading models
 pv_hook = PV(db_hook)
-pv_hook.create_table()
-
 point_hook = Point(db_hook)
+
+pv_hook.create_table()
 point_hook.create_table()
 
 # Static files
