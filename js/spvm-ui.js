@@ -46,10 +46,10 @@ function castDialog(model, action, properties, arguments) {
 		$('.ui-state-error').removeClass('ui-state-error');
 
 		data = {}
-		$('#' + model + '_ajax_' + action + ' input').each(function(i, el) {
+		$('#' + model + '_' + action + ' input').each(function(i, el) {
 			data[$(el).attr('id')] = $(el).val();
 		});
-		$('#' + model + '_ajax_' + action + ' select').each(function(i, el) {
+		$('#' + model + '_' + action + ' select').each(function(i, el) {
 			data[$(el).attr('id')] = $(el).val();
 		});
 

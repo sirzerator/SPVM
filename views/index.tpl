@@ -22,8 +22,8 @@
 					<td>{{row['description']}}</td>
 					<td>
 						<ul class="icons ui-widget ui-helper-clearfix">
-							<li class="ui-state-default ui-corner-all"><a href="/pv/edit/{{row['id']}}" class="pv edit" rel="{{row['id']}}" title="Edit"><span class="ui-icon ui-icon-pencil"></span></a></li>
-							<li class="ui-state-default ui-corner-all"><a href="/pv/delete/{{row['id']}}" class="pv delete" rel="{{row['id']}}" title="Delete"><span class="ui-icon ui-icon-trash"></span></a></li>
+							<a href="/pv/edit/{{row['id']}}" class="pv edit" rel="{{row['id']}}" title="Edit"><li class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-pencil"></span></li></a>
+							<a href="/pv/delete/{{row['id']}}" class="pv delete" rel="{{row['id']}}" title="Delete"><li class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-trash"></span></li></a>
 						</ul>
 					</td>
 				</tr>
@@ -93,4 +93,4 @@
 				});
 			});
 		</script>
-		%rebase layout title='SPVM'
+		%rebase html title='SPVM'

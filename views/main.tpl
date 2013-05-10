@@ -58,6 +58,7 @@
 			</div>
 		</div>
 		<div class="odj left panel">
+			<h2>Agenda</h2>
 			<p class="buttons"><a href="/point/new" class="button new point"><button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">New Point</span></button></a></p>
 			%if points['count']:
 				%tree(points['rows'], 0, list())
@@ -80,6 +81,10 @@
 					<li class="ui-state-default ui-corner-all"><a href="/point/delete/*|id|*" class="point delete" rel="*|id|*" title="Delete"><span class="ui-icon ui-icon-trash"></span></a></li>
 				</ul>
 			</div>
+		</div>
+		<div class="participants right panel">
+			<h2>Participants</h2>
+			<p class="buttons"><a href="/participant/new" class="button new participant"><button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">New Participant</span></button></a></p>
 		</div>
 		<div class="footer clearfix">
 			<div class="status"><p>Status bar</p></div>
@@ -147,4 +152,4 @@
 				});
 			});
 		</script>
-		%rebase layout title='SPVM'
+		%rebase html title=pv_data['title'] + ' &mdash; SPVM'

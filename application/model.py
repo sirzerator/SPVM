@@ -13,7 +13,10 @@ class Model:
 		if 'description' in self.__dict__.keys() and self.description is not None:
 			self.db.create_table(self.description)
 		else:
-			table_description = 'CREATE TABLE IF NOT EXISTS "' + self.__class__.__name__.lower() + '" (\n'
+			if 'table' in self.__dict__.keys() and self.table is not None and len(self.table) > 0:
+				table_description = 'CREATE TABLE IF NOT EXISTS "' + self.table + '" (\n'
+			else:
+				table_description = 'CREATE TABLE IF NOT EXISTS "' + self.__class__.__name__.lower() + '" (\n'
 			
 			for row in self.rows:
 				if row == 'id':
@@ -153,18 +156,18 @@ class Model:
 			for field_name, field_validation in self.validation.items():
 				if field_name in fields:
 					if 'required' in field_validation and field_validation['required']:
-						if 'empty' in field_validation and not field_validation['empty']:
-							if len(fields[field_name].strip()) == 0:
+						if len(fields[field_name].strip()) == 0:
+							if 'empty' in field_validation and not field_validation['empty']:
 								validation_errors[field_name] += 'Field ' + field_name + ' : cannot be empty. '
-						elif 'default' in field_validation:
-							fields[field_name] = field_validation['default']
-						elif 'type' in field_validation:
-							if field_validation['type'] == int:
-								fields[field_name] = 0
-							elif field_validation['type'] == str:
-								fields[field_name] = ''
-							else:
-								fields[field_name] = ''
+							elif 'default' in field_validation:
+								fields[field_name] = field_validation['default']
+							elif 'type' in field_validation:
+								if field_validation['type'] == int:
+									fields[field_name] = 0
+								elif field_validation['type'] == str:
+									fields[field_name] = ''
+								else:
+									fields[field_name] = ''
 					if 'type' in field_validation:
 						if field_validation['type'] == int:
 							try:

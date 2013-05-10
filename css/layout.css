@@ -10,6 +10,7 @@ body {
 	line-height:2em;
 	height:2em;
 	background:green;
+	width:100%;
 }
 	.header div {
 		float:left;
@@ -35,6 +36,13 @@ body {
 	position:absolute;
 	top:2em;
 	bottom:2em;
+}
+
+.left {
+	left:0;
+}
+.right {
+	right:0;
 }
 
 
@@ -100,3 +108,7 @@ ul.icons {
 	.odj .points.level3 > .point {
 		padding-left:6em;
 	}
+	
+.participants {
+	width:15%;
+}

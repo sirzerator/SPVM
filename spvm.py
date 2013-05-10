@@ -7,6 +7,8 @@ from collections import defaultdict
 from bottle import *
 from application.pv import PV
 from application.point import Point
+from application.proposition import Proposition
+from application.participant import Participant
 
 
 # Parsing command line arguments
@@ -39,9 +41,13 @@ db_hook = db_module.DBModule(options.database, options.username, options.passwor
 # Loading models
 pv_hook = PV(db_hook)
 point_hook = Point(db_hook)
+proposition_hook = Proposition(db_hook)
+participant_hook = Participant(db_hook)
 
 pv_hook.create_table()
 point_hook.create_table()
+proposition_hook.create_table()
+participant_hook.create_table()
 
 # Static files
 @route('/js/<filepath:path>')
@@ -76,11 +82,11 @@ def counter():
 ### New
 @route('/pv/new', method='GET')
 def get_new_pv():
-	return template('pv/new', errors=dict(), data=defaultdict(lambda:''))
+	return template('pv/new', title="New PV", errors=dict(), data=defaultdict(lambda:''))
 
 @route('/pv/ajax/new', method='GET')
 def ajax_get_new_pv():
-	return template('pv/ajax/new', errors=dict(), data=defaultdict(lambda:''))
+	return template('pv/new', ajax=True, title="New PV", errors=dict(), data=defaultdict(lambda:''))
 
 @route('/pv/new', method='POST')
 def post_new_pv():
@@ -93,7 +99,7 @@ def post_new_pv():
 
 	validation_result = pv_hook.create(fields)
 	if isinstance(validation_result, dict):
-		return template('pv/new', errors=validation_result, data=request.forms)
+		return template('pv/new', title="New PV", errors=validation_result, data=request.forms)
 	else:
 		redirect('/')
 
@@ -164,12 +170,12 @@ def get_delete_pv(pv_id=None):
 	if pv_id is None:
 		redirect('/')
 	else:
-		return template('pv/delete', pv_id=pv_id)
+		return template('pv/delete', title="Delete PV", pv_id=pv_id)
 
 @route('/pv/ajax/delete', method='GET')
 def ajax_get_delete_pv():
 	pv_id = request.query.pv_id
-	return template('pv/ajax/delete', pv_id=pv_id)
+	return template('pv/delete', ajax=True, title="Delete PV", pv_id=pv_id)
 
 @route('/pv/delete', method='POST')
 def post_delete_pv():
@@ -185,6 +191,7 @@ def post_delete_pv():
 @route('/pv/ajax/delete', method='POST')
 def ajax_post_delete_pv():
 	pv_id = request.forms.pv_id
+	print(pv_id)
 	if pv_id is None:
 		redirect('/')
 	else:
@@ -401,5 +408,4 @@ def ajax_post_delete_point():
 			print('Error. Do something.') # TODO
 
 # Loading interface (controller/view)
-debug(True)
-run(host=options.host, port=options.port, reloader=True)
+run(host=options.host, port=options.port, reloader=True, debug=True)

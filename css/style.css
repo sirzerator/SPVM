@@ -1,4 +1,8 @@
-.panel {
+.panel.left {
 	background-color:#d5d5d5;
 	border-right:4px ridge #d5d5d5;
+}
+.panel.right {
+	background-color:#d5d5d5;
+	border-left:4px groove #d5d5d5;
 }
