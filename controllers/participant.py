@@ -1,6 +1,6 @@
 from bottle import *
-from application.pv import PV
-from application.participant import Participant
+from models.pv import PV
+from models.participant import Participant
 
 from collections import defaultdict
 

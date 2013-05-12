@@ -1,6 +1,7 @@
 from bottle import *
-from application.pv import PV
-from application.point import Point
+from models.pv import PV
+from models.point import Point
+from models.pv import PV
 
 from collections import defaultdict
 
@@ -9,6 +10,7 @@ class Point_Controller:
 	def __init__(self, db):
 		self.db = db
 		self.point_hook = Point(db)
+		self.pv_hook = PV(db)
 
 
 	# Utility
@@ -25,12 +27,16 @@ class Point_Controller:
 
 	### New
 	def get_new_point(self):
-		return template('point/new', title="New point", pv_id=get_current_pv_id(), points=points, errors=dict())
+		points = self.point_hook.retrieve(where={'pv_id':pv_id, 'parent_id':''}, order="rank ASC", recursion=3)
+
+		return template('point/new', title="New point", pv_id=self.get_current_pv_id(), points=points, errors=dict())
 	get_new_point.route = '/point/new'
 	get_new_point.method = 'GET'
 
-	def ajax_get_new_point():
-		return template('point/new', ajax=True, title="New point", pv_id=get_current_pv_id(), points=points, errors=dict())
+	def ajax_get_new_point(self):
+		points = self.point_hook.retrieve(where={'pv_id':self.get_current_pv_id(), 'parent_id':''}, order="rank ASC", recursion=3)
+
+		return template('point/new', ajax=True, title="New point", pv_id=self.get_current_pv_id(), points=points, errors=dict())
 	ajax_get_new_point.route = '/point/ajax/new'
 	ajax_get_new_point.method = 'GET'
 

@@ -6,14 +6,14 @@ import sys, os
 import bottle
 from bottle import *
 
-from pv import PV_Controller
-from point import Point_Controller
-from participant import Participant_Controller
+from controllers.pv import PV_Controller
+from controllers.point import Point_Controller
+from controllers.participant import Participant_Controller
 
-from application.pv import PV
-from application.point import Point
-from application.proposition import Proposition
-from application.participant import Participant
+from models.pv import PV
+from models.point import Point
+from models.proposition import Proposition
+from models.participant import Participant
 
 
 # Parsing command line arguments

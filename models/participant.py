@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from application.model import Model
+from models.model import Model
 
 
 class Participant(Model):

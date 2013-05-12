@@ -1,6 +1,6 @@
 from bottle import *
-from application.pv import PV
-from application.point import Point
+from models.pv import PV
+from models.point import Point
 
 from collections import defaultdict
 
