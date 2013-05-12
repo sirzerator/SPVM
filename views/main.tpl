@@ -7,8 +7,8 @@
 
 			%for point in points:
 				<div class="points level{{level}}">
-					<div id="point_{{point['id']}}" class="point clearfix">
-						<div class="text">
+					<div id="point_{{point['id']}}" class="point">
+						<p class="text">
 							<span class="number">
 							%number = ""
 
@@ -23,10 +23,10 @@
 							%if point['description']:
 								&mdash; <span class="description">{{point['description']}}</span>
 							%end
-						</div>
+						</p>
 						<ul class="icons ui-widget ui-helper-clearfix">
-							<li class="ui-state-default ui-corner-all"><a href="/point/edit/{{point['id']}}" class="point edit" rel="{{point['id']}}" title="Edit"><span class="ui-icon ui-icon-pencil"></span></a></li>
-							<li class="ui-state-default ui-corner-all"><a href="/point/delete/{{point['id']}}" class="point delete" rel="{{point['id']}}" title="Delete"><span class="ui-icon ui-icon-trash"></span></a></li>
+							<li class="ui-state-default ui-corner-all"><a href="/point/edit/{{point['id']}}" class="point edit" data-rel="{{point['id']}}" title="Edit"><span class="ui-icon ui-icon-pencil"></span></a></li>
+							<li class="ui-state-default ui-corner-all"><a href="/point/delete/{{point['id']}}" class="point delete" data-rel="{{point['id']}}" title="Delete"><span class="ui-icon ui-icon-trash"></span></a></li>
 						</ul>
 					</div>
 
@@ -42,8 +42,8 @@
 			<div class="title"><h2>{{pv_data['title']}}</h2></div>
 			<div class="controls">
 				<ul class="icons ui-widget ui-helper-clearfix">
-					<li class="ui-state-default ui-corner-all"><a title="Configure" rel="22" class="pv config" href="/pv/config"><span class="ui-icon ui-icon-wrench"></span></a></li>
-					<li class="ui-state-default ui-corner-all"><a title="Close" rel="22" class="pv close" href="/pv/close"><span class="ui-icon ui-icon-close"></span></a></li>
+					<li class="ui-state-default ui-corner-all"><a title="Configure" class="pv config" href="/pv/config"><span class="ui-icon ui-icon-wrench"></span></a></li>
+					<li class="ui-state-default ui-corner-all"><a title="Close" class="pv close" href="/pv/close"><span class="ui-icon ui-icon-close"></span></a></li>
 				</ul>
 			</div>
 		</div>
@@ -59,7 +59,7 @@
 		</div>
 		<div class="odj left panel">
 			<h2>Agenda</h2>
-			<p class="buttons"><a href="/point/new" class="button new point"><button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">New Point</span></button></a></p>
+			<div class="buttons"><button class="new point ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><!--<a href="/point/new">--><span class="ui-button-text">New Point</span><!--</a>--></button></div>
 			%if points['count']:
 				%tree(points['rows'], 0, list())
 			%else:
@@ -68,23 +68,26 @@
 				</div>
 			%end
 			<div class="point clearfix overflow">
-				<div class="text">
+				<p class="text">
 					<span class="number">
 					*|number|*
 					</span>
 					&nbsp;
 					<span class="title">*|title|*</span>?|description|?
 						&mdash; <span class="description">*|description|*</span>?|description|?
-				</div>
+				</p>
 				<ul class="icons ui-widget ui-helper-clearfix">
-					<li class="ui-state-default ui-corner-all"><a href="/point/edit/*|id|*" class="point edit" rel="*|id|*" title="Edit"><span class="ui-icon ui-icon-pencil"></span></a></li>
-					<li class="ui-state-default ui-corner-all"><a href="/point/delete/*|id|*" class="point delete" rel="*|id|*" title="Delete"><span class="ui-icon ui-icon-trash"></span></a></li>
+					<li class="ui-state-default ui-corner-all"><a href="/point/edit/*|id|*" class="point edit" data-rel="*|id|*" title="Edit"><span class="ui-icon ui-icon-pencil"></span></a></li>
+					<li class="ui-state-default ui-corner-all"><a href="/point/delete/*|id|*" class="point delete" data-rel="*|id|*" title="Delete"><span class="ui-icon ui-icon-trash"></span></a></li>
 				</ul>
 			</div>
 		</div>
 		<div class="participants right panel">
 			<h2>Participants</h2>
-			<p class="buttons"><a href="/participant/new" class="button new participant"><button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">New Participant</span></button></a></p>
+			<div class="buttons"><form method="GET" action="/participant/new">
+				<button class="new participant ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><!--<a href="/participant/new">--><span class="ui-button-text">New Participant</span><!--</a>--></button>
+				<input type="hidden" id="pv_id" name="pv_id" value="{{pv_id}}" />
+			</form></div>
 		</div>
 		<div class="footer clearfix">
 			<div class="status"><p>Status bar</p></div>
@@ -130,7 +133,7 @@
 						beforeDone: function() {},
 						beforeClose: function() {}
 					}
-					castDialog('point', 'edit', properties, "point_id=" + $(this).attr('rel'));
+					castDialog('point', 'edit', properties, "point_id=" + $(this).attr('data-rel'));
 				});
 				$(".odj").delegate(".point.delete", "click", function(e) {
 					e.preventDefault();
@@ -148,7 +151,23 @@
 						},
 						beforeClose: function() {}
 					}
-					castDialog('point', 'delete', properties, "point_id=" + $(this).attr('rel'));
+					castDialog('point', 'delete', properties, "point_id=" + $(this).attr('data-rel'));
+				});
+				
+				$(".participant.new").click(function(e) {
+					e.preventDefault();
+					properties = {
+						title:"New participant",
+						OK:"Add",
+						Cancel:"Cancel",
+						width:200,
+						height:280,
+						modal:true,
+						resizable:false,
+						beforeDone: function(response, element) {},
+						beforeClose: function() {}
+					}
+					castDialog('participant', 'new', properties, null);
 				});
 			});
 		</script>

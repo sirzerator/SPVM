@@ -70,44 +70,53 @@ ul.icons {
 }
 	ul.icons li {
 		width:16px;
+		height:16px;
 		float:left;
 		margin:0 1px;
 	}
+	ul.icons li:hover {
+		width:16px;
+		height:16px;
+	}
 
 .odj {
-	width:30%;
+	width:20%;
 }
-	.odj .points .point {
-		margin-bottom:0.1em;
-		line-height:18px;
+	.odj .points {
 	}
-	.odj .points .point:hover {
-		background-color:#CCCCCC;
-	}
-		.odj .points .point .text {
-			float:left;
-			clear:left;
-			line-height:18px;
+		.odj .points .point {
+			margin-bottom:0.1em;
+			height:18px;
+			position:relative;
+			clear:both;
 		}
-		.odj .points .point .icons {
-			position:absolute;
-			right:0;
-			display:none;
+		.odj .points .point:hover {
+			background-color:#CCCCCC;
 		}
-		.odj .points .point:hover .icons {
-			display:block;
+			.odj .points .point .text {
+				clear:left;
+				line-height:18px;
+				float:left;
+			}
+			.odj .points .point .icons {
+				display:none;
+				float:left;
+				margin-left:20px;
+			}
+			.odj .points .point:hover .icons {
+				display:block;
+			}
+		.odj .points.level0 > .point {
 		}
-	.odj .points.level0 > .point {
-	}
-	.odj .points.level1 > .point {
-		padding-left:2em;
-	}
-	.odj .points.level2 > .point {
-		padding-left:4em;
-	}
-	.odj .points.level3 > .point {
-		padding-left:6em;
-	}
+		.odj .points.level1 > .point {
+			padding-left:2em;
+		}
+		.odj .points.level2 > .point {
+			padding-left:4em;
+		}
+		.odj .points.level3 > .point {
+			padding-left:6em;
+		}
 	
 .participants {
 	width:15%;

@@ -1,6 +1,6 @@
-<form id="point_edit" action="/point/edit" method="post">
+<form id="participant_edit" action="/participant/edit" method="post">
 	<input type="hidden" id="pv_id" name="pv_id" value="{{data['pv_id']}}" />
-	<input type="hidden" id="point_id" name="point_id" value="{{data['id']}}" />
+	<input type="hidden" id="participant_id" name="participant_id" value="{{data['id']}}" />
 	<p class="field title">
 		<label for="title">Title</label><br />
 		<input class="text ui-widget-content ui-corner-all" type="text" name="title" id="title" value="{{data['title']}}" />
@@ -32,9 +32,9 @@
 		<label for="parent_id">Parent</label><br />
 		<select id="parent_id" name="parent_id">
 			<option value="">---</option>
-			%if points['count']:
-				%for point in points['rows']:
-					<option value="{{point['id']}}"{{!' selected="selected"' if data['parent_id'] == point['id'] else str(data['parent_id'])}}>{{point['title']}}</option>
+			%if participants['count']:
+				%for participant in participants['rows']:
+					<option value="{{participant['id']}}"{{!' selected="selected"' if data['parent_id'] == participant['id'] else str(data['parent_id'])}}>{{participant['title']}}</option>
 				%end
 			%end
 		</select>

@@ -52,7 +52,7 @@ function castDialog(model, action, properties, arguments) {
 		$('#' + model + '_' + action + ' select').each(function(i, el) {
 			data[$(el).attr('id')] = $(el).val();
 		});
-
+		console.log(data);
 		$.ajax("/" + model + "/ajax/" + action, {
 			type: 'post',
 			data: data
