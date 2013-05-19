@@ -26,7 +26,12 @@ class PV(Model):
 				'minLength': 1,
 				'maxLength': 100,
 				'empty': False,
-				'required': True
+				'required': True,
+				'messages': {
+					'required': 'Title required.',
+					'empty': 'Cannot be empty.',
+					'maxLength': 'Too long.'
+				}
 			},
 			'date': {
 				'type': date,

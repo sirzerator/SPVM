@@ -20,7 +20,12 @@ class Point(Model):
 					'minLength': 1,
 					'maxLength': 100,
 					'empty': False,
-					'required': True
+					'required': True,
+					'messages': {
+						'required': 'Title required.',
+						'empty': 'Cannot be empty.',
+						'maxLength': 'Too long'
+					}
 				},
 				'description': {
 					'type': str
@@ -28,7 +33,10 @@ class Point(Model):
 				'rank': {
 					'type': int,
 					'default': 0,
-					'required': True
+					'required': True,
+					'messages': {
+						'required': 'Title required.'
+					}
 				}
 		}
 		self.belongs_to = {

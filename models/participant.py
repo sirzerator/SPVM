@@ -18,7 +18,12 @@ class Participant(Model):
 				'empty': False,
 				'minLength':1,
 				'maxLength':100,
-				'required': True
+				'required': True,
+				'messages': {
+					'required': 'Full name required.',
+					'maxLength': 'Too long.',
+					'empty': 'Cannot be empty.'
+				}
 			}
 		}
 		self.belongs_to = {
@@ -31,13 +36,13 @@ class Participant(Model):
 				'key':'group_id'
 			}
 		}
-		self.has_many = {
-			'points': {
-				'table':'point',
-				'key':'participant_id',
-				'delete':'cascade',
-				'update':None
-			}
-		}
+		#self.has_many = {
+		#	'propositions': {
+		#		'table':'proposition',
+		#		'key':'participant_id',
+		#		'delete':'cascade',
+		#		'update':None
+		#	}
+		#}
 
 		super(Participant, self).__init__(db)

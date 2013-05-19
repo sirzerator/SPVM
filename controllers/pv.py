@@ -1,6 +1,7 @@
 from bottle import *
 from models.pv import PV
 from models.point import Point
+from models.participant import Participant
 
 from collections import defaultdict
 
@@ -9,7 +10,8 @@ class PV_Controller:
 	def __init__(self, db):
 		self.db = db
 		self.pv_hook = PV(db)
-		self.point_hook = Point(db) # TODO
+		self.point_hook = Point(db)
+		self.participant_hook = Participant(db)
 
 	### New
 	def get_new_pv(self):
@@ -167,7 +169,9 @@ class PV_Controller:
 
 			points = self.point_hook.retrieve(where={'pv_id':pv_id, 'parent_id':''}, order="rank ASC", recursion=3)
 
-			return template('main', pv_id=pv_id, pv_data=pv_data, points=points)
+			participants = self.participant_hook.retrieve(where={'pv_id':pv_id})
+
+			return template('main', pv_id=pv_id, pv_data=pv_data, points=points, participants=participants)
 	get_pv.route = '/pv/<pv_id>'
 	get_pv.method = 'GET'
 

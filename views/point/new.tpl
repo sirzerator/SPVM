@@ -6,7 +6,7 @@
 		%if 'title' in errors.keys():
 			<br /><span class="error">{{errors['title']}}</span>
 		%else:
-			<span class="error"></span>
+			<br /><span class="error"></span>
 		%end
 	</p>
 	<p class="field description">
@@ -15,7 +15,7 @@
 		%if 'description' in errors.keys():
 			<br /><span class="error">{{errors['description']}}</span>
 		%else:
-			<span class="error"></span>
+			<br /><span class="error"></span>
 		%end
 	</p>
 	<p class="field rank">
@@ -24,7 +24,7 @@
 		%if 'rank' in errors.keys():
 			<br /><span class="error">{{errors['rank']}}</span>
 		%else:
-			<span class="error"></span>
+			<br /><span class="error"></span>
 		%end
 	</p>
 	<p class="field parent">
@@ -42,8 +42,8 @@
 	<p class="field submit">
 		<input class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" type="submit" value="Create" />
 	</p>
-%end_if
+%end
 </form>
 %if not get('ajax', False):
 	%rebase forms title=title
-%end_if
+%end

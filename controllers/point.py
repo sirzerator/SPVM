@@ -12,7 +12,6 @@ class Point_Controller:
 		self.point_hook = Point(db)
 		self.pv_hook = PV(db)
 
-
 	# Utility
 	def get_current_pv_id(self):
 		cookie_data = request.get_cookie('spvm', dict(), secret='secret')
@@ -119,7 +118,7 @@ class Point_Controller:
 	post_edit_point.route = '/point/edit'
 	post_edit_point.method = 'POST'
 
-	def post_edit_point(self):
+	def ajax_post_edit_point(self):
 		fields = dict()
 		fields['id'] = request.forms.point_id
 		fields['pv_id'] = request.forms.pv_id
@@ -134,8 +133,8 @@ class Point_Controller:
 			return validation_result
 		else:
 			return {'id': validation_result, 'number': self.point_hook.get_numbering(int(validation_result))}
-	post_edit_point.route = '/point/ajax/edit'
-	post_edit_point.method = 'POST'
+	ajax_post_edit_point.route = '/point/ajax/edit'
+	ajax_post_edit_point.method = 'POST'
 
 	### Delete
 	def get_delete_point(self, point_id=None):

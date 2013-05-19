@@ -12,6 +12,9 @@ body {
 	background:green;
 	width:100%;
 }
+	.header h1, .header h2 {
+		margin:0;
+	}
 	.header div {
 		float:left;
 	}
@@ -31,12 +34,18 @@ body {
 	.footer .status {
 		text-align:center;
 	}
+		.footer .status p {
+			margin:0;
+		}
 
 .panel {
 	position:absolute;
 	top:2em;
 	bottom:2em;
 }
+	.panel h2 {
+		margin:0;
+	}
 
 .left {
 	left:0;
@@ -79,7 +88,7 @@ ul.icons {
 		height:16px;
 	}
 
-.odj {
+.left.panel {
 	width:20%;
 }
 	.odj .points {
@@ -97,6 +106,7 @@ ul.icons {
 				clear:left;
 				line-height:18px;
 				float:left;
+				margin:0;
 			}
 			.odj .points .point .icons {
 				display:none;
@@ -118,6 +128,38 @@ ul.icons {
 			padding-left:6em;
 		}
 	
-.participants {
+.right.panel {
 	width:15%;
+}
+	.participants {
+	}
+		.participants .participant {
+			margin-bottom:0.1em;
+			height:18px;
+			position:relative;
+			clear:both;
+		}
+		.participants .participant:hover {
+			background-color:#CCCCCC;
+		}
+			.participants .participant .text {
+				clear:left;
+				line-height:18px;
+				float:left;
+				margin:0;
+			}
+			.participants .participant .icons {
+				display:none;
+				float:left;
+				margin-left:20px;
+			}
+			.participants .participant:hover .icons {
+				display:block;
+			}
+
+.ui-dialog-content p {
+	margin:0;
+}
+.ui-dialog-content form p {
+	margin:1em 0;
 }

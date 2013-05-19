@@ -6,7 +6,7 @@
 		%if 'title' in errors.keys():
 			<br /><span class="error">{{errors['title']}}</span>
 		%else:
-			<span class="error"></span>
+			<br /><span class="error"></span>
 		%end
 	</p>
 	<p class="field date">
@@ -15,7 +15,7 @@
 		%if 'date' in errors.keys():
 			<br /><span class="error">{{errors['date']}}</span>
 		%else:
-			<span class="error"></span>
+			<br /><span class="error"></span>
 		%end
 	</p>
 	<p class="field time">
@@ -24,7 +24,7 @@
 		%if 'time' in errors.keys():
 			<br /><span class="error">{{errors['time']}}</span>
 		%else:
-			<span class="error"></span>
+			<br /><span class="error"></span>
 		%end
 	</p>
 	<p class="field location">
@@ -33,7 +33,7 @@
 		%if 'location' in errors.keys():
 			<br /><span class="error">{{errors['location']}}</span>
 		%else:
-			<span class="error"></span>
+			<br /><span class="error"></span>
 		%end
 	</p>
 	<p class="field description">
@@ -42,7 +42,7 @@
 		%if 'description' in errors.keys():
 			<br /><span class="error">{{errors['description']}}</span>
 		%else:
-			<span class="error"></span>
+			<br /><span class="error"></span>
 		%end
 	</p>
 %if not get('ajax', False):

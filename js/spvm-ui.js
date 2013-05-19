@@ -52,124 +52,131 @@ function castDialog(model, action, properties, arguments) {
 		$('#' + model + '_' + action + ' select').each(function(i, el) {
 			data[$(el).attr('id')] = $(el).val();
 		});
-		console.log(data);
+
 		$.ajax("/" + model + "/ajax/" + action, {
 			type: 'post',
-			data: data
-		}).done(function(response) {
-			if (action == 'new' || action == 'edit') {
-				if (response['id']) {
-					newEl = null;
-					if (action == 'edit') {
-						newEl = $("#" + model + "_" + response['id']);
-						newEl.html($("." + model + ".overflow").html());
-					} else if (action == 'new') {
-						newEl = $("." + model + ".overflow").clone();
-					}
-
-					// Conditional blocks (positive)
-					var conditionalsRegExp=/\?\|(.+?)\|\?/g;
-					results = newEl.html().match(conditionalsRegExp);
-
-					if (results) {
-						for (i = 0; i < results.length; i += 2) {
-							variableName = results[i].substr(2, results[i].length-4);
-							var innerConditionalRegExp = new RegExp("\\?\\|" + variableName + "\\|\\?", "g");
-
-							innerConditionalRegExp.exec(newEl.html());
-							var begin = innerConditionalRegExp.lastIndex;
-
-							innerConditionalRegExp.exec(newEl.html());
-							var end = innerConditionalRegExp.lastIndex;
-
-							if ($('#' + variableName).val() == "" || $('#' + variableName).val() == undefined) {
-								newEl.html(newEl.html().substr(0, begin) + newEl.html().substr(end));
-							}
-
-							newEl.html(newEl.html().replace(innerConditionalRegExp, ""));
+			data: data,
+			success: function(response) {
+				if (action == 'new' || action == 'edit') {
+					if (response['id']) {
+						var newEl = null;
+						if (action == 'edit') {
+							newEl = $("#" + model + "_" + response['id']);
+							newEl.html($("." + model + ".overflow").html());
+						} else if (action == 'new') {
+							newEl = $("." + model + ".overflow").clone();
 						}
-					}
+						console.log(newEl);
 
-					// Conditional blocks (negative)
-					var conditionalsRegExp=/:\|(.+?)\|:/g;
-					results = newEl.html().match(conditionalsRegExp);
+						// Conditional blocks (positive)
+						var conditionalsRegExp=/\?\|(.+?)\|\?/g;
+						results = newEl.html().match(conditionalsRegExp);
 
-					if (results) {
-						for (i = 0; i < results.length; i += 2) {
-							variableName = results[i].substr(2, results[i].length-4);
-							var innerConditionalRegExp = new RegExp(":\\|" + variableName + "\\|:", "g");
-
-							innerConditionalRegExp.exec(newEl.html());
-							var begin = innerConditionalRegExp.lastIndex;
-
-							innerConditionalRegExp.exec(newEl.html());
-							var end = innerConditionalRegExp.lastIndex;
-
-							console.log(variableName);
-							console.log($('#' + variableName).val());
-
-							if ($('#' + variableName).val() != "" && $('#' + variableName).val() != undefined) {
-								newEl.html(newEl.html().substr(0, begin) + newEl.html().substr(end));
-							}
-
-							newEl.html(newEl.html().replace(innerConditionalRegExp, ""));
-						}
-					}
-
-					// Variable replacement
-					var placeholdersRegExp=/\*\|(.+?)\|\*/g;
-					results = newEl.html().match(placeholdersRegExp);
-
-					if (results) {
-						for (i = 0; i < results.length; i++) {
-							if (results[i].substr(2,2) == 'id') {
-								newEl.attr('id', model + '_' + response['id']);
-								newEl.html(newEl.html().replace(/\*\|id\|\*/g, ""+response['id']));
-								newEl.html(newEl.html().replace(/\*%7Cid%7C\*/g, ""+response['id']));
-							} else {
+						if (results) {
+							for (i = 0; i < results.length; i += 2) {
 								variableName = results[i].substr(2, results[i].length-4);
-								var currentPlaceholderRegex = new RegExp("\\*\\|" + variableName + "\\|\\*", "g");
-								
-								var variableValue = $('#' + variableName).val();
-								if (variableValue == undefined) {
-									newEl.html(newEl.html().replace(currentPlaceholderRegex, response[variableName]));
+								var innerConditionalRegExp = new RegExp("\\?\\|" + variableName + "\\|\\?", "g");
+
+								innerConditionalRegExp.exec(newEl.html());
+								var begin = innerConditionalRegExp.lastIndex;
+
+								innerConditionalRegExp.exec(newEl.html());
+								var end = innerConditionalRegExp.lastIndex;
+
+								if ($('#' + variableName).val() == "" || $('#' + variableName).val() == undefined) {
+									newEl.html(newEl.html().substr(0, begin) + newEl.html().substr(end));
+								}
+
+								newEl.html(newEl.html().replace(innerConditionalRegExp, ""));
+							}
+						}
+
+						// Conditional blocks (negative)
+						var conditionalsRegExp=/:\|(.+?)\|:/g;
+						results = newEl.html().match(conditionalsRegExp);
+
+						if (results) {
+							for (i = 0; i < results.length; i += 2) {
+								variableName = results[i].substr(2, results[i].length-4);
+								var innerConditionalRegExp = new RegExp(":\\|" + variableName + "\\|:", "g");
+
+								innerConditionalRegExp.exec(newEl.html());
+								var begin = innerConditionalRegExp.lastIndex;
+
+								innerConditionalRegExp.exec(newEl.html());
+								var end = innerConditionalRegExp.lastIndex;
+
+								console.log(variableName);
+								console.log($('#' + variableName).val());
+
+								if ($('#' + variableName).val() != "" && $('#' + variableName).val() != undefined) {
+									newEl.html(newEl.html().substr(0, begin) + newEl.html().substr(end));
+								}
+
+								newEl.html(newEl.html().replace(innerConditionalRegExp, ""));
+							}
+						}
+
+						// Variable replacement
+						var placeholdersRegExp=/\*\|(.+?)\|\*/g;
+						results = newEl.html().match(placeholdersRegExp);
+
+						if (results) {
+							for (i = 0; i < results.length; i++) {
+								if (results[i].substr(2,2) == 'id') {
+									newEl.attr('id', model + '_' + response['id']);
+									newEl.html(newEl.html().replace(/\*\|id\|\*/g, ""+response['id']));
+									newEl.html(newEl.html().replace(/\*%7Cid%7C\*/g, ""+response['id']));
 								} else {
-									newEl.html(newEl.html().replace(currentPlaceholderRegex, variableValue));
+									variableName = results[i].substr(2, results[i].length-4);
+									var currentPlaceholderRegex = new RegExp("\\*\\|" + variableName + "\\|\\*", "g");
+
+									var variableValue = $('#' + variableName).val();
+									if (variableValue == undefined) {
+										newEl.html(newEl.html().replace(currentPlaceholderRegex, response[variableName]));
+									} else {
+										newEl.html(newEl.html().replace(currentPlaceholderRegex, variableValue));
+									}
 								}
 							}
 						}
+
+						$("." + model + ".nothing").hide();
+
+						if (properties['beforeDone']) {
+							newEl = properties.beforeDone(response, newEl);
+						}
+
+						if (action == 'new') {
+							newEl.insertBefore($("." + model + ".overflow")).fadeIn().removeClass("overflow");
+						}
+
+						$("#" + model + '_' + action + '_dialog').dialog("close");
+						$("#" + model + '_' + action + '_dialog').remove();
+					} else {
+						for (value in response) {
+							$('.' + value + ' .error').html(response[value]);
+							$('#' + value).addClass('ui-state-error');
+						}
 					}
-
-					$("." + model + ".nothing").hide();
-
+				} else if (action == 'delete') {
 					if (properties['beforeDone']) {
-						newEl = properties.beforeDone(response, newEl);
-
+						var element = $("#" + model + "_" + data[model + "_id"]);
+						properties.beforeDone(response, element);
 					}
 
-					if (action == 'new') {
-						newEl.insertBefore($("." + model + ".overflow")).fadeIn().removeClass("overflow");
-					}
+					$("#" + model + "_" + data[model + "_id"]).fadeOut();
 
 					$("#" + model + '_' + action + '_dialog').dialog("close");
 					$("#" + model + '_' + action + '_dialog').remove();
-				} else {
-					for (value in response) {
-						$('.' + value + ' .error').html(response[value]);
-						$('#' + value).addClass('ui-state-error');
-					}
 				}
-			} else if (action == 'delete') {
-				if (properties['beforeDone']) {
-					var element = $("#" + model + "_" + data[model + "_id"]);
-					console.log(element);
-					properties.beforeDone(response, element);
+			},
+			error: function(jqXHR) {
+				var response = $.parseJSON(jqXHR.responseText);
+				for (value in response) {
+					$('.' + value + ' .error').html(response[value]);
+					$('#' + value).addClass('ui-state-error');
 				}
-
-				$("#" + model + "_" + data[model + "_id"]).fadeOut();
-
-				$("#" + model + '_' + action + '_dialog').dialog("close");
-				$("#" + model + '_' + action + '_dialog').remove();
 			}
 		});
 	}

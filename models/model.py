@@ -80,7 +80,7 @@ class Model:
 
 		base = self.db.retrieve(self.table, fields, where, order);
 
-		if isinstance(self.has_many, dict):
+		if 'has_many' in self.__dict__.keys() and isinstance(self.has_many, dict):
 			rows_by_level = list()
 			rows_by_level.append(base['rows'])
 
@@ -115,11 +115,11 @@ class Model:
 		return validation_errors
 
 	def delete(self, where=None):
-		if isinstance(self.has_many, dict):
+		if 'has_many' in self.__dict__.keys() and isinstance(self.has_many, dict):
 			for has_many_relation in self.has_many:
 				if 'delete' in self.has_many[has_many_relation]:
 					if self.has_many[has_many_relation]['delete'] == 'cascade':
-						table_module = __import__('application.' + self.has_many[has_many_relation]['table'], fromlist=['application'])
+						table_module = __import__('models.' + self.has_many[has_many_relation]['table'], fromlist=['models'])
 						classname = self.has_many[has_many_relation]['table'][0].upper() + self.has_many[has_many_relation]['table'][1:]
 						table_hook = getattr(table_module, classname)(self.db)
 
@@ -157,7 +157,10 @@ class Model:
 					if 'required' in field_validation and field_validation['required']:
 						if len(fields[field_name].strip()) == 0:
 							if 'empty' in field_validation and not field_validation['empty']:
-								validation_errors[field_name] += 'Field ' + field_name + ' : cannot be empty. '
+								if 'messages' in field_validation and 'empty' in field_validation['messages'] and len(field_validation['messages']['empty']):
+									validation_errors[field_name] += field_validation['messages']['empty']
+								else:
+									validation_errors[field_name] += 'Field ' + field_name + ' : cannot be empty. '
 							elif 'default' in field_validation:
 								fields[field_name] = field_validation['default']
 							elif 'type' in field_validation:

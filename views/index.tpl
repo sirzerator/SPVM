@@ -69,7 +69,7 @@
 						OK:"Yes",
 						Cancel:"No",
 						width:300,
-						height:125,
+						height:130,
 						modal:true,
 						resizable:false,
 						beforeDone: function() {},

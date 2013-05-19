@@ -20,7 +20,11 @@ class Proposition(Model):
 			'text': {
 				'type': str,
 				'empty': False,
-				'required': True
+				'required': True,
+				'messages': {
+					'required': 'Text required.',
+					'empty': 'Cannot be empty.'
+				}
 			}
 		}
 		self.belongs_to = {
@@ -32,7 +36,7 @@ class Proposition(Model):
 				'table':'point',
 				'key':'point_id'
 			},
-			'initiator': {
+			'author': {
 				'table':'participant',
 				'key':'participant_id'
 			},
