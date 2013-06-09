@@ -10,6 +10,10 @@ from controllers.pv import PV_Controller
 from controllers.point import Point_Controller
 from controllers.participant import Participant_Controller
 
+from services.pv import PV_Service
+from services.point import Point_Service
+from services.participant import Participant_Service
+
 from models.pv import PV
 from models.point import Point
 from models.proposition import Proposition
@@ -74,6 +78,16 @@ setup_routes(point_controller)
 
 participant_controller = Participant_Controller(db_hook)
 setup_routes(participant_controller)
+
+# Loading services
+pv_service = PV_Service(db_hook)
+setup_routes(pv_service)
+
+point_service = Point_Service(db_hook)
+setup_routes(point_service)
+
+participant_service = Participant_Service(db_hook)
+setup_routes(participant_service)
 
 # Static files
 @route('/js/<filepath:path>')
